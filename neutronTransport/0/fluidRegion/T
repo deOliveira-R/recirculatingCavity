@@ -10,32 +10,33 @@ FoamFile
     version     2.0;
     format      ascii;
     class       volScalarField;
-    location    "0/neutroRegion";
-    object      defaultFlux;
+    location    "0/fluidRegion";
+    object      T;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 -2 -1 0 0 0 0 ];
+dimensions      [0 0 0 1 0 0 0];
 
-internalField   uniform 1;
+internalField   uniform 900;
 
 boundaryField
 {
-    ".*Wall"
+    topWall
     {
-        type            fixedValue;
-        value           uniform 0;
+        type            zeroGradient;
     }
-    /*
+    bottomWall
     {
-        type            albedoSP3;
-        gamma           0.5; // defined as (1-alpha)/(1+alpha)/2, alpha being the albedo coefficient
-        diffCoeffName   Dalbedo;  //not to be changed
-        fluxStarAlbedo  fluxStarAlbedo; //not to be changed
-        forSecondMoment false;  //true in case it is a condition for a second moment flux (for SP3 calculations)
-        value           uniform 1;
+        type            zeroGradient;
     }
-    */
+    leftWall
+    {
+        type            zeroGradient;
+    }
+    rightWall
+    {
+        type            zeroGradient;
+    }
     frontAndBack
     {
         type            empty;

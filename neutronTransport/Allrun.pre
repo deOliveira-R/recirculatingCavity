@@ -1,0 +1,18 @@
+#!/bin/sh
+
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+#create meshes
+runApplication -s fluidRegion            blockMesh -region fluidRegion
+runApplication -s neutroRegion           blockMesh -region neutroRegion
+runApplication -s thermoMechanicalRegion blockMesh -region thermoMechanicalRegion
+
+# create dummy files for post-processing
+paraFoam -touch -region fluidRegion
+paraFoam -touch -region neutroRegion
+paraFoam -touch -region thermoMechanicalRegion
+
+#cp -rf 0.orig 0

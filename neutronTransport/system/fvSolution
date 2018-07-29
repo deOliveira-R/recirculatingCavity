@@ -9,38 +9,17 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    location    "0/neutroRegion";
-    object      defaultFlux;
+    class       dictionary;
+    object      fvSolution;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 -2 -1 0 0 0 0 ];
-
-internalField   uniform 1;
-
-boundaryField
+PIMPLE
 {
-    ".*Wall"
-    {
-        type            fixedValue;
-        value           uniform 0;
-    }
-    /*
-    {
-        type            albedoSP3;
-        gamma           0.5; // defined as (1-alpha)/(1+alpha)/2, alpha being the albedo coefficient
-        diffCoeffName   Dalbedo;  //not to be changed
-        fluxStarAlbedo  fluxStarAlbedo; //not to be changed
-        forSecondMoment false;  //true in case it is a condition for a second moment flux (for SP3 calculations)
-        value           uniform 1;
-    }
-    */
-    frontAndBack
-    {
-        type            empty;
-    }
+    nOuterCorrectors        1;
+    tighltyCoupled          false; // if true it iterates on energy, fuel temp, thermal-mechanics and neutronics (not necessary for very short time steps)
+    timeStepResidual        0.00005; // required accuracy for the coupling
+    maxTimeStepIterations   3;
 }
-
 
 // ************************************************************************* //

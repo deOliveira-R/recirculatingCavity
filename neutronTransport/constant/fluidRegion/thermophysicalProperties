@@ -5,42 +5,50 @@
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
+
 FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volScalarField;
-    location    "0/neutroRegion";
-    object      defaultFlux;
+    class       dictionary;
+    location    "constant";
+    object      thermophysicalProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [ 0 -2 -1 0 0 0 0 ];
-
-internalField   uniform 1;
-
-boundaryField
+thermoType
 {
-    ".*Wall"
-    {
-        type            fixedValue;
-        value           uniform 0;
-    }
-    /*
-    {
-        type            albedoSP3;
-        gamma           0.5; // defined as (1-alpha)/(1+alpha)/2, alpha being the albedo coefficient
-        diffCoeffName   Dalbedo;  //not to be changed
-        fluxStarAlbedo  fluxStarAlbedo; //not to be changed
-        forSecondMoment false;  //true in case it is a condition for a second moment flux (for SP3 calculations)
-        value           uniform 1;
-    }
-    */
-    frontAndBack
-    {
-        type            empty;
-    }
+    type            heRhoThermo;
+    mixture         pureMixture;
+    transport       const;
+    thermo          hConst;
+    equationOfState rhoConst;
+    specie          specie;
+    energy          sensibleEnthalpy;
 }
 
+mixture
+{
+    specie
+    {
+        nMoles          1;
+        molWeight       90;
+    }
+    equationOfState
+    {
+        rho     2000;       // density: kg/m3
+    }
+    thermodynamics
+    {
+        Cp      3.075e3;     // specific heat capacity: J/(K.kg) or (kg.m2)/(K.s2.kg)
+        Hf      0;
+        Sf      0;
+    }
+    transport
+    {
+        mu      50;          // dynamic viscosity: Pa.s or kg/(m.s)
+        Pr      3.075e5;    // Prandtl number: (Cp.mu)/k
+    }
+}
 
 // ************************************************************************* //
