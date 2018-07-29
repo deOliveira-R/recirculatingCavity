@@ -5,50 +5,46 @@
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
-
 FoamFile
 {
     version     2.0;
     format      ascii;
     class       dictionary;
-    location    "constant";
-    object      thermophysicalProperties;
+    location    "system";
+    object      fvSolution;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-thermoType
+solvers
 {
-    type            heRhoThermo;
-    mixture         pureMixture;
-    transport       const;
-    thermo          hConst;
-    equationOfState rhoConst;
-    specie          specie;
-    energy          sensibleEnthalpy;
+    "flux.*"
+    { 
+      
+
+        solver          PCG;
+        preconditioner  FDIC;
+        tolerance       1e-7;
+        relTol          0;
+    }
+
+    "prec.*"
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-7;
+        relTol          0;
+    }
 }
 
-mixture
+neutronTransport
 {
-    specie
-    {
-        nMoles          1;
-        molWeight       90;
-    }
-    equationOfState
-    {
-        rho     2000;       // density: kg/m3
-    }
-    thermodynamics
-    {
-        Cp      3.075e3;     // specific heat capacity: J/(K.kg) or (kg.m2)/(K.s2.kg)
-        Hf      0;
-        Sf      0;
-    }
-    transport
-    {
-        mu      50;          // dynamic viscosity: Pa.s or kg/(m.s)
-        Pr      3.075e5;    // Prandtl number: (Cp.mu)/k
-    }
+    integralPredictor           false; // integral neutron balance made at each time step to predict fluxes at next step (can be unstable)
+    implicitPredictor           false;
+    ROMAcceleration             false;
+    aitkenAcceleration          false;
+    neutronIterationResidual    0.000001; // required accuracy for the coupling of different energy groups
+    maxNeutronIterations        50; // up to 3-400 if no acceleration techniques 
 }
+
 
 // ************************************************************************* //
