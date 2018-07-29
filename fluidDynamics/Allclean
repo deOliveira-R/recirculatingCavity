@@ -11,4 +11,4 @@ foamCleanPolyMesh -region fluidRegion
 foamCleanPolyMesh -region neutroRegion
 foamCleanPolyMesh -region thermoMechanicalRegion
 
-rm -f *.dat
+rm -f *.dat *.foam

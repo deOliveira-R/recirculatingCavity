@@ -16,23 +16,24 @@ FoamFile
 
 convertToMeters 1;
 
-//Pi  1;   // test constant
+vertices #codeStream
+{
+    codeInclude
+    #{
+        #include "pointField.H"
+        #include "solutionDomain.H"
+    #};
 
-// 2 valid ways of getting the Pi constant in OpenFOAM
-Pi  #calc "constant::mathematical::pi";
-//Pi  #calc "degToRad(180)";
+    codeOptions
+    #{
+        -I$(FOAM_CASE)/system
+    #};
 
-vertices
-(
-    (   0   0 -0.1) //0
-    ( $Pi   0 -0.1) //1
-    ( $Pi $Pi -0.1) //2
-    (   0 $Pi -0.1) //3
-    (   0   0  0.1) //4
-    ( $Pi   0  0.1) //5
-    ( $Pi $Pi  0.1) //6
-    (   0 $Pi  0.1) //7
-);
+    code
+    #{
+        os << getVertices(xMax, xMin, yMax, yMin); // Function in solutionDomain.H in system folder
+    #};
+};
 
 blocks
 (
