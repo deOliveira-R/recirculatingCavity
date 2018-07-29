@@ -1,0 +1,82 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+momentumSource
+{
+    type        vectorCodedSource;
+
+    active      true;
+
+    name        trigonometricSource;
+
+    vectorCodedSourceCoeffs
+    {
+        selectionMode   all;
+        
+        fields          (U);
+
+        codeInclude
+        #{
+            
+        #};
+
+        codeCorrect
+        #{
+            Pout<< "**codeCorrect**" << endl;
+        #};
+
+        codeAddSup
+        #{
+            //const Time& time = mesh().time();
+            const volVectorField& Centres = mesh_.C();
+            vectorField& Usource = eqn.source();
+            //scalarField& heSource = eqn.source();
+            //const volScalarField& nu = mesh_.lookupObject<volScalarField>("nu");
+            //const volScalarField& rho = mesh_.lookupObject<volScalarField>("rho");
+            //volScalarField mu = nu*rho;
+
+            forAll(Centres, cellI)
+            {
+                Usource[cellI] += vector(0, -cos(Centres[cellI].x())*sin(Centres[cellI].y()), 0);
+            }
+
+            //heSource -= 0.1*sqr(time.value())*V;
+        #};
+
+        codeSetValue
+        #{
+            Pout<< "**codeSetValue**" << endl;
+        #};
+
+        // Dummy entry. Make dependent on above to trigger recompilation
+        code
+        #{
+            $codeInclude
+            $codeCorrect
+            $codeAddSup
+            $codeSetValue
+        #};
+    }
+
+    trigonometricSourceCoeffs
+    {
+        $vectorCodedSourceCoeffs;
+    }
+}
+
+
+// ************************************************************************* //
