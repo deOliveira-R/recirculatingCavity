@@ -24,22 +24,186 @@ boundaryField
     topWall
     {
         type            fixedValue;
-        value           uniform ( -0.5 0 0 );
+        value           #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+
+            code
+            #{
+                // Standard lines to get access to the mesh data
+                // Get access to the boundary
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+
+                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
+                const label id = mesh.boundary().findPatchID("topWall"); // Get label ID (integer) of the "topWall" patch
+                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
+
+                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
+
+                forAll(U, i)
+                {
+                    const scalar x = patch.Cf()[i][0]; // get x coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
+                    U[i] = vector(-cos(x), 0., 0.);
+                }
+                U.writeEntry("", os);
+            #};
+        };
     }
     bottomWall
     {
         type            fixedValue;
-        value           uniform (  0.5 0 0 );
+        value           #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+
+            code
+            #{
+                // Standard lines to get access to the mesh data
+                // Get access to the boundary
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+
+                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
+                const label id = mesh.boundary().findPatchID("bottomWall"); // Get label ID (integer) of the "topWall" patch
+                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
+
+                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
+
+                forAll(U, i)
+                {
+                    const scalar x = patch.Cf()[i][0]; // get x coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
+                    U[i] = vector(cos(x), 0., 0.);
+                }
+                U.writeEntry("", os);
+            #};
+        };
     }
     leftWall
     {
         type            fixedValue;
-        value           uniform ( 0 -0.5 0 );
+        value           #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+
+            code
+            #{
+                // Standard lines to get access to the mesh data
+                // Get access to the boundary
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+
+                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
+                const label id = mesh.boundary().findPatchID("leftWall"); // Get label ID (integer) of the "topWall" patch
+                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
+
+                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
+
+                forAll(U, i)
+                {
+                    const scalar y = patch.Cf()[i][1]; // get y coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
+                    U[i] = vector(0., -sin(y), 0.);
+                }
+                U.writeEntry("", os);
+            #};
+        };
     }
     rightWall
     {
         type            fixedValue;
-        value           uniform ( 0 0.5 0 );
+        value           #codeStream
+        {
+            codeInclude
+            #{
+                #include "fvCFD.H"
+            #};
+
+            codeOptions
+            #{
+                -I$(LIB_SRC)/finiteVolume/lnInclude \
+                -I$(LIB_SRC)/meshTools/lnInclude
+            #};
+
+            codeLibs
+            #{
+                -lmeshTools \
+                -lfiniteVolume
+            #};
+
+            code
+            #{
+                // Standard lines to get access to the mesh data
+                // Get access to the boundary
+                const IOdictionary& d = static_cast<const IOdictionary&>
+                (
+                    dict.parent().parent()
+                );
+
+                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
+                const label id = mesh.boundary().findPatchID("rightWall"); // Get label ID (integer) of the "topWall" patch
+                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
+
+                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
+
+                forAll(U, i)
+                {
+                    const scalar y = patch.Cf()[i][1]; // get y coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
+                    U[i] = vector(0., sin(y), 0.);
+                }
+                U.writeEntry("", os);
+            #};
+        };
     }
     frontAndBack
     {
