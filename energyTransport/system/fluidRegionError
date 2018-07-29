@@ -1,0 +1,102 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Web:      www.OpenFOAM.org
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Calculates the relative error between the numerical and analytical
+    solution for the problem and writes the field to the last time step.
+
+\*---------------------------------------------------------------------------*/
+
+// Load the library containing the 'coded' functionObject
+libs            ("libutilityFunctionObjects.so");
+
+region fluidRegion;
+
+type coded;
+
+// Name of on-the-fly generated functionObject
+name fluidRegionError;
+
+codeEnd
+#{
+    // Lookup U
+    Info<< "Looking up field U\n" << endl;
+    const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+
+    Info<< "Extracting mesh centres\n" << endl;
+    const volVectorField& centres = U.mesh().C();
+
+    volVectorField UA
+    (
+        IOobject
+        (
+            "UA",
+            mesh().time().timeName(),
+            U.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        U
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    forAll(UA, i)
+    {
+        UA[i] = vector(sin(centres[i].x())*cos(centres[i].y()), -cos(centres[i].x())*sin(centres[i].y()), 0);
+    }
+
+    // Force writing of UA (since time has not changed)
+    UA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField UError("UError", mag(U - UA)/mag(UA));
+
+    Info<<"Writing relative error in U to " << UError.objectPath() << endl;
+
+    UError.write();
+
+    // Lookup p
+    Info<< "Looking up field p\n" << endl;
+    const volScalarField& p = mesh().lookupObject<volScalarField>("p");
+    const volScalarField& rho = mesh().lookupObject<volScalarField>("thermo:rho");
+    const volScalarField& mu = mesh().lookupObject<volScalarField>("thermo:mu");
+
+    volScalarField pA
+    (
+        IOobject
+        (
+            "pA",
+            mesh().time().timeName(),
+            p.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        p
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    scalar pZero = 1e5;
+
+    forAll(pA, i)
+    {
+        pA[i] = pZero;// - (rho[i]*(pow(cos(centres[i].x()), 2) + pow(cos(centres[i].y()), 2))/2) + 2*mu[i]*cos(centres[i].x())*cos(centres[i].y());
+    }
+
+    // Force writing of UA (since time has not changed)
+    pA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField pError("pError", (p - pA)/pA);
+
+    Info<<"Writing relative error in p to " << pError.objectPath() << endl;
+
+    pError.write();
+#};

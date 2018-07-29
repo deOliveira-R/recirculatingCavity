@@ -1,0 +1,48 @@
+/*
+Arbitrary XS for analytical solution
+02-March-2018
+*/
+
+/*
+No delayed neutron precursors!
+*/
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      nuclearData;
+}
+
+energyGroups    1;
+precGroups      1;
+
+rhoCoolRef  2000;
+TfuelRef    900;
+
+pTarget     4;
+
+zones
+(
+    cavity
+    {
+        fuelFraction    1.000000e+00 ;
+        IV              nonuniform List<scalar> 1 ( 1E-07 );
+        D               nonuniform List<scalar> 1 ( 2e-02 );
+        nuSigmaEff      nonuniform List<scalar> 1 ( 1.04 );
+        sigmaPow        nonuniform List<scalar> 1 ( 1 );
+        scatteringMatrix  1  1 (
+        ( 1.566666e+01 )
+        );
+        sigmaDisapp     nonuniform List<scalar> 1 ( 1 );
+        chiPrompt       nonuniform List<scalar> 1 ( 1 );
+        chiDelayed      nonuniform List<scalar> 1 ( 0 );
+        Beta            nonuniform List<scalar> 1 ( 0 );
+        lambda          nonuniform List<scalar> 1 ( 1.246670E-02 );
+        discFactor      nonuniform List<scalar> 1 ( 1 );
+        integralFlux    nonuniform List<scalar> 1 ( 1 );
+        ScNo 2e8;
+    }
+);
