@@ -36,18 +36,19 @@ mixture
     }
     equationOfState
     {
-        rho     2000;       // density: kg/m3
+        rho     1000;       // density: kg/m3
     }
     thermodynamics
     {
-        Cp      3.075e3;     // specific heat capacity: J/(K.kg) or (kg.m2)/(K.s2.kg)
+        Cp      1e3;     // specific heat capacity: J/(K.kg) or (kg.m2)/(K.s2.kg)
+        //Cp      1;
         Hf      0;
         Sf      0;
     }
     transport
     {
         mu      50;          // dynamic viscosity: Pa.s or kg/(m.s)
-        Pr      7.6875e4;    // Prandtl number: (Cp.mu)/k
+        Pr      1;    // Prandtl number: (Cp.mu)/k
     }
 }
 

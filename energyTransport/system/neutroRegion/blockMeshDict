@@ -41,7 +41,7 @@ vertices #codeStream
 
 blocks
 (
-    hex (0 1 2 3 4 5 6 7) cavity (100 100 1) simpleGrading (1 1 1)
+    hex (0 1 2 3 4 5 6 7) cavity (50 50 1) simpleGrading (1 1 1)
 );
 
 edges

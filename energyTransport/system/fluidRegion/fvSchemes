@@ -17,12 +17,21 @@ FoamFile
 
 ddtSchemes
 {
-    default Euler;
+    default none;
+    ddt(gamma,p_rgh)    Euler;
+    ddt(gamma,rho)      Euler;
+    ddt(rho,U)          Euler;
+    ddt((rho*gamma),K)  steadyState;
+    ddt((rho*gamma),h)  steadyState;
+    //ddt((rho*gamma),K)  Euler;
+    //ddt((rho*gamma),h)  Euler;
+    ddt(externalRhoCp,Tstructures)  Euler;
+
 }
 
 gradSchemes
 {
-    default none;
+    default Gauss linear;
     grad(U)             Gauss linear;
     grad(p_rgh)         Gauss linear;
     grad((rho*rhok))    Gauss linear;
@@ -33,9 +42,12 @@ divSchemes
 {
     default none;
     div(phi,U)          Gauss linearUpwind grad(U);
-    div(phi,K)          Gauss upwind;
-    div(phi,h)          Gauss upwind;
+    div(phi,K)          Gauss linearUpwind default;
+    div(phi,h)          Gauss linearUpwind grad(h);
+    //div(phi,h)          Gauss linear;
     div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
+
+    //div(U)              Gauss linear; // postProcessing
 }
 
 laplacianSchemes
@@ -46,7 +58,7 @@ laplacianSchemes
     laplacian(alphaEff,h)   Gauss linear limited corrected 0.333;
     laplacian(DkEff,k)      Gauss linear limited corrected 0.333;
     laplacian(DepsilonEff,epsilon)  Gauss linear limited corrected 0.333;
-    laplacian(DREff,R)      Gauss linear limited corrected 0.333;
+    laplacian(DREff,R)              Gauss linear limited corrected 0.333;
     laplacian((rho*nuEff),U)        Gauss linear limited corrected 0.333;
     laplacian(thermo:alpha,h)       Gauss linear limited corrected 0.333;
 }

@@ -45,7 +45,7 @@ codeEnd
 
     Info<< "\nEvaluating analytical solution at centres" << endl;
 
-    //scalar fluxZero = 1e5;
+    scalar fluxZero = 1e7;
 
     scalar x = 0;
     scalar y = 0;
@@ -54,7 +54,7 @@ codeEnd
     {
         x = centres[i].x();
         y = centres[i].y();
-        fluxA[i] = sin(x)*sin(y);
+        fluxA[i] = fluxZero*sin(x)*sin(y);
     }
 
     // Force writing of fluxA (since time has not changed)

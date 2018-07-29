@@ -19,10 +19,10 @@ FoamFile
 energyGroups    1;
 precGroups      1;
 
-rhoCoolRef  2000;
-TfuelRef    900;
+rhoCoolRef  1000;
+TfuelRef    1000;
 
-pTarget     4;
+pTarget     4e7;
 
 zones
 (

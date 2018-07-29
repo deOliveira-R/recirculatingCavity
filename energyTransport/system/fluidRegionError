@@ -45,9 +45,14 @@ codeEnd
 
     Info<< "\nEvaluating analytical solution at centres" << endl;
 
+    scalar x = 0;
+    scalar y = 0;
+
     forAll(UA, i)
     {
-        UA[i] = vector(sin(centres[i].x())*cos(centres[i].y()), -cos(centres[i].x())*sin(centres[i].y()), 0);
+        x = centres[i].x();
+        y = centres[i].y();
+        UA[i] = vector(sin(x)*cos(y), -cos(x)*sin(y), 0);
     }
 
     // Force writing of UA (since time has not changed)
@@ -60,6 +65,8 @@ codeEnd
     Info<<"Writing relative error in U to " << UError.objectPath() << endl;
 
     UError.write();
+
+/*****************************************************************************/
 
     // Lookup p
     Info<< "Looking up field p\n" << endl;
@@ -99,4 +106,46 @@ codeEnd
     Info<<"Writing relative error in p to " << pError.objectPath() << endl;
 
     pError.write();
+
+/*****************************************************************************/
+    // Lookup T
+    Info<< "Looking up field T\n" << endl;
+    const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+    //const volScalarField& rho = mesh().lookupObject<volScalarField>("thermo:banana");
+
+    volScalarField TA
+    (
+        IOobject
+        (
+            "TA",
+            mesh().time().timeName(),
+            T.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        T
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    scalar TBoundary = 1000;
+    scalar deltaT = 100;
+
+    forAll(TA, i)
+    {
+        x = centres[i].x();
+        y = centres[i].y();
+        TA[i] = TBoundary + deltaT*sin(x)*sin(y);
+    }
+
+    // Force writing of UA (since time has not changed)
+    TA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField TError("TError", (T - TA)/TA);
+
+    Info<<"Writing relative error in T to " << TError.objectPath() << endl;
+
+    TError.write();
 #};
