@@ -23,187 +23,133 @@ boundaryField
 {
     topWall
     {
-        type            fixedValue;
-        value           #codeStream
-        {
-            codeInclude
-            #{
-                #include "fvCFD.H"
-            #};
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    negCosProfile;
 
-            codeOptions
-            #{
-                -I$(LIB_SRC)/finiteVolume/lnInclude \
-                -I$(LIB_SRC)/meshTools/lnInclude
-            #};
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+        #};
 
-            codeLibs
-            #{
-                -lmeshTools \
-                -lfiniteVolume
-            #};
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude
+        #};
 
-            code
-            #{
-                // Standard lines to get access to the mesh data
-                // Get access to the boundary
-                const IOdictionary& d = static_cast<const IOdictionary&>
-                (
-                    dict.parent().parent()
-                );
+        code
+        #{
+            const fvPatch& boundaryPatch = patch(); // Access to mesh information at patch
+            const vectorField& Cf = boundaryPatch.Cf(); // Recerence to face centres
+            vectorField& field = *this; // Reference to THIS vector field (patch one)
 
-                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
-                const label id = mesh.boundary().findPatchID("topWall"); // Get label ID (integer) of the "topWall" patch
-                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
+            // scalar t = this->db().time().value(); // Access to time value
 
-                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
-
-                forAll(U, i)
-                {
-                    const scalar x = patch.Cf()[i][0]; // get x coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
-                    U[i] = vector(-cos(x), 0., 0.);
-                }
-                U.writeEntry("", os);
-            #};
-        };
+            forAll(Cf, faceI)
+            {
+                field[faceI] = vector(-cos(Cf[faceI].x()), 0, 0);
+            }
+        #};
     }
     bottomWall
     {
-        type            fixedValue;
-        value           #codeStream
-        {
-            codeInclude
-            #{
-                #include "fvCFD.H"
-            #};
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    posCosProfile;
 
-            codeOptions
-            #{
-                -I$(LIB_SRC)/finiteVolume/lnInclude \
-                -I$(LIB_SRC)/meshTools/lnInclude
-            #};
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+        #};
 
-            codeLibs
-            #{
-                -lmeshTools \
-                -lfiniteVolume
-            #};
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude
+        #};
 
-            code
-            #{
-                // Standard lines to get access to the mesh data
-                // Get access to the boundary
-                const IOdictionary& d = static_cast<const IOdictionary&>
-                (
-                    dict.parent().parent()
-                );
+        code
+        #{
+            const fvPatch& boundaryPatch = patch();
+            const vectorField& Cf = boundaryPatch.Cf();
+            vectorField& field = *this;
 
-                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
-                const label id = mesh.boundary().findPatchID("bottomWall"); // Get label ID (integer) of the "topWall" patch
-                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
-
-                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
-
-                forAll(U, i)
-                {
-                    const scalar x = patch.Cf()[i][0]; // get x coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
-                    U[i] = vector(cos(x), 0., 0.);
-                }
-                U.writeEntry("", os);
-            #};
-        };
+            forAll(Cf, faceI)
+            {
+                field[faceI] = vector(cos(Cf[faceI].x()), 0, 0);
+            }
+        #};
     }
     leftWall
     {
-        type            fixedValue;
-        value           #codeStream
-        {
-            codeInclude
-            #{
-                #include "fvCFD.H"
-            #};
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    negSinProfile;
 
-            codeOptions
-            #{
-                -I$(LIB_SRC)/finiteVolume/lnInclude \
-                -I$(LIB_SRC)/meshTools/lnInclude
-            #};
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+        #};
 
-            codeLibs
-            #{
-                -lmeshTools \
-                -lfiniteVolume
-            #};
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude
+        #};
 
-            code
-            #{
-                // Standard lines to get access to the mesh data
-                // Get access to the boundary
-                const IOdictionary& d = static_cast<const IOdictionary&>
-                (
-                    dict.parent().parent()
-                );
+        code
+        #{
+            const fvPatch& boundaryPatch = patch();
+            const vectorField& Cf = boundaryPatch.Cf();
+            vectorField& field = *this;
 
-                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
-                const label id = mesh.boundary().findPatchID("leftWall"); // Get label ID (integer) of the "topWall" patch
-                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
-
-                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
-
-                forAll(U, i)
-                {
-                    const scalar y = patch.Cf()[i][1]; // get y coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
-                    U[i] = vector(0., -sin(y), 0.);
-                }
-                U.writeEntry("", os);
-            #};
-        };
+            forAll(Cf, faceI)
+            {
+                field[faceI] = vector(0, -sin(Cf[faceI].y()), 0);
+            }
+        #};
     }
     rightWall
     {
-        type            fixedValue;
-        value           #codeStream
-        {
-            codeInclude
-            #{
-                #include "fvCFD.H"
-            #};
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    posSinProfile;
 
-            codeOptions
-            #{
-                -I$(LIB_SRC)/finiteVolume/lnInclude \
-                -I$(LIB_SRC)/meshTools/lnInclude
-            #};
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+        #};
 
-            codeLibs
-            #{
-                -lmeshTools \
-                -lfiniteVolume
-            #};
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude
+        #};
 
-            code
-            #{
-                // Standard lines to get access to the mesh data
-                // Get access to the boundary
-                const IOdictionary& d = static_cast<const IOdictionary&>
-                (
-                    dict.parent().parent()
-                );
+        code
+        #{
+            const fvPatch& boundaryPatch = patch();
+            const vectorField& Cf = boundaryPatch.Cf();
+            vectorField& field = *this;
 
-                const fvMesh& mesh = refCast<const fvMesh>(d.db()); // Access mesh database
-                const label id = mesh.boundary().findPatchID("rightWall"); // Get label ID (integer) of the "topWall" patch
-                const fvPatch& patch = mesh.boundary()[id]; // Access boundary mesh
-
-                vectorField U(patch.size(), vector(0, 0, 0)); // Initialize vector field of correct size for boundary
-
-                forAll(U, i)
-                {
-                    const scalar y = patch.Cf()[i][1]; // get y coordinate by accessing patch.Cf()[i][component] where x=0, y=1 and z=2
-                    U[i] = vector(0., sin(y), 0.);
-                }
-                U.writeEntry("", os);
-            #};
-        };
+            forAll(Cf, faceI)
+            {
+                field[faceI] = vector(0, sin(Cf[faceI].y()), 0);
+            }
+        #};
     }
     frontAndBack
     {
