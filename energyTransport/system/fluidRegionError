@@ -1,0 +1,153 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Web:      www.OpenFOAM.org
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Calculates the relative error between the numerical and analytical
+    solution for the problem and writes the field to the last time step.
+
+\*---------------------------------------------------------------------------*/
+
+// Load the library containing the 'coded' functionObject
+libs            ("libutilityFunctionObjects.so");
+
+region fluidRegion;
+
+type coded;
+
+// Name of on-the-fly generated functionObject
+name fluidRegionError;
+
+codeEnd
+#{
+    // Lookup U
+    Info<< "Looking up field U\n" << endl;
+    const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+
+    Info<< "Extracting mesh centres\n" << endl;
+    const volVectorField& centres = U.mesh().C();
+
+    volVectorField UA
+    (
+        IOobject
+        (
+            "UA",
+            mesh().time().timeName(),
+            U.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        U
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    scalar x = 0;
+    scalar y = 0;
+
+    forAll(UA, i)
+    {
+        x = centres[i].x();
+        y = centres[i].y();
+        UA[i] = vector(sin(x)*cos(y), -cos(x)*sin(y), 0);
+    }
+
+    // Force writing of UA (since time has not changed)
+    UA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField UError("UError", mag(U - UA)/mag(UA));
+
+    Info<<"Writing relative error in U to " << UError.objectPath() << endl;
+
+    UError.write();
+
+/*****************************************************************************/
+
+    // Lookup p
+    Info<< "Looking up field p\n" << endl;
+    const volScalarField& p = mesh().lookupObject<volScalarField>("p");
+    const volScalarField& rho = mesh().lookupObject<volScalarField>("thermo:rho");
+    const volScalarField& mu = mesh().lookupObject<volScalarField>("thermo:mu");
+
+    volScalarField pA
+    (
+        IOobject
+        (
+            "pA",
+            mesh().time().timeName(),
+            p.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        p
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    scalar pZero = 1e5;
+
+    forAll(pA, i)
+    {
+        x = centres[i].x();
+        y = centres[i].y();
+        pA[i] = pZero + rho[i]*(pow(cos(x),2) + pow(cos(y),2))/2;
+    }
+
+    // Force writing of UA (since time has not changed)
+    pA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField pError("pError", mag(p - pA)/mag(pA));
+
+    Info<<"Writing relative error in p to " << pError.objectPath() << endl;
+
+    pError.write();
+
+/*****************************************************************************/
+    // Lookup T
+    Info<< "Looking up field T\n" << endl;
+    const volScalarField& T = mesh().lookupObject<volScalarField>("T");
+    //const volScalarField& rho = mesh().lookupObject<volScalarField>("thermo:banana");
+
+    volScalarField TA
+    (
+        IOobject
+        (
+            "TA",
+            mesh().time().timeName(),
+            T.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        T
+    );
+
+    Info<< "\nEvaluating analytical solution at centres" << endl;
+
+    scalar TBoundary = 1000;
+    scalar deltaT = 100;
+
+    forAll(TA, i)
+    {
+        x = centres[i].x();
+        y = centres[i].y();
+        TA[i] = TBoundary + deltaT*sin(x)*sin(y);
+    }
+
+    // Force writing of UA (since time has not changed)
+    TA.write();
+
+    Info<< "\nEvaluating relative error" << endl;
+
+    volScalarField TError("TError", mag(T - TA)/mag(TA));
+
+    Info<<"Writing relative error in T to " << TError.objectPath() << endl;
+
+    TError.write();
+#};
