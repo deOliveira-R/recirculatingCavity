@@ -31,7 +31,7 @@ momentumSource
 
         codeInclude
         #{
-            #include "solutionDomain.H"
+            #include "solutionDomainSpecifications.H"
         #};
 
         codeOptions

@@ -19,7 +19,7 @@ region fluidRegion;
 type coded;
 
 // Name of on-the-fly generated functionObject
-name error;
+name fluidRegionError;
 
 codeEnd
 #{
@@ -55,7 +55,7 @@ codeEnd
 
     Info<< "\nEvaluating relative error" << endl;
 
-    volScalarField UError("UError", mag(U-UA)/mag(UA));
+    volScalarField UError("UError", mag(U - UA)/mag(UA));
 
     Info<<"Writing relative error in U to " << UError.objectPath() << endl;
 
@@ -94,7 +94,7 @@ codeEnd
 
     Info<< "\nEvaluating relative error" << endl;
 
-    volScalarField pError("pError", (p-pA)/pA);
+    volScalarField pError("pError", (p - pA)/pA);
 
     Info<<"Writing relative error in p to " << pError.objectPath() << endl;
 

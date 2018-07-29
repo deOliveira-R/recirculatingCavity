@@ -15,6 +15,8 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// General
+
 application         GeN-Foam;
 
 startFrom           startTime;//startTime;//latestTime;
@@ -23,7 +25,7 @@ startTime           0;
 
 stopAt              endTime;//writeNow;//  
 
-endTime             50;
+endTime             100;
 
 deltaT              1; // time step (if non adjusted)
 
@@ -50,6 +52,7 @@ timePrecision       8;
 runTimeModifiable   true;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 // Physics to solve
 
 solveFluidMechanics     false;
@@ -60,14 +63,21 @@ solveNeutronics         true;
 
 solveThermalMechanics   false;
 
-compr                   false; // true for compressible simulation
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Global simulation options
+
+compr       false; // true for compressible simulation
+
+liquidFuel  true;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 // Solution control
 
-maxCo                       1; // should be below 1 for CFL condition (necessary to guarantee stability if solving NS)
+maxCo               1; // should be below 1 for CFL condition (necessary to guarantee stability if solving NS)
 
-maxPowerVariation           0.025; //max power variation in each time step
+maxPowerVariation   0.025; //max power variation in each time step
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -77,6 +87,8 @@ functions
     #includeFunc fluidRegionError
     #includeFunc fluidRegionMinMaxMagnitude
     #includeFunc fluidRegionSingleGraph
+    
+    #includeFunc neutroRegionError
 }
 
 

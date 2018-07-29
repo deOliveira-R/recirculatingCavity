@@ -33,7 +33,8 @@ boundaryField
             #include "fvCFD.H"
             #include <cmath>
             #include <iostream>
-            #include "solutionDomain.H" // This file makes the BC aware of domain specs. Check system folder for it.
+            // This file makes the BC aware of domain specs. Check system folder for it.
+            #include "solutionDomainSpecifications.H"
         #};
 
         codeOptions
@@ -74,7 +75,8 @@ boundaryField
             #include "fvCFD.H"
             #include <cmath>
             #include <iostream>
-            #include "solutionDomain.H"
+            // This file makes the BC aware of domain specs. Check system folder for it.
+            #include "solutionDomainSpecifications.H"
         #};
 
         codeOptions
@@ -115,7 +117,8 @@ boundaryField
             #include "fvCFD.H"
             #include <cmath>
             #include <iostream>
-            #include "solutionDomain.H"
+            // This file makes the BC aware of domain specs. Check system folder for it.
+            #include "solutionDomainSpecifications.H"
         #};
 
         codeOptions
@@ -156,7 +159,8 @@ boundaryField
             #include "fvCFD.H"
             #include <cmath>
             #include <iostream>
-            #include "solutionDomain.H"
+            // This file makes the BC aware of domain specs. Check system folder for it.
+            #include "solutionDomainSpecifications.H"
         #};
 
         codeOptions
