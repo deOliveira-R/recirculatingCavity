@@ -1,0 +1,21 @@
+# System files
+Thumbs.db
+.DS_store
+.directory
+
+# Python files
+*.pyc
+
+# LaTeX files
+*.aux
+*.bbl
+*.blg
+*.fdb*
+*.fls
+*.log
+*.out
+*.synctex*
+*.nl*
+
+/documentation/*.pdf
+/mesh_*/
