@@ -1,0 +1,192 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  5                                     |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    location    "0/fluidRegion";
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions      [ 0 1 -1 0 0 0 0 ];
+
+internalField   uniform ( 0 0 0 );
+
+boundaryField
+{
+    topWall
+    {
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    topNegSinProfile;
+
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+            #include "solutionDomain.H" // This file makes the BC aware of domain specs. Check system folder for it.
+        #};
+
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude \
+            -I$(FOAM_CASE)/system
+        #};
+
+        code
+        #{
+            const fvPatch& boundaryPatch = patch(); // Access to mesh information at patch
+            const vectorField& faceCentres = boundaryPatch.Cf(); // Recerence to face centres
+            vectorField& field = *this; // Reference to THIS vector field (patch one)
+
+            // scalar t = this->db().time().value(); // Access to time value
+
+            scalar x = 0;
+            scalar y = 0;
+
+            forAll(faceCentres, faceI)
+            {
+                x = faceCentres[faceI].x();
+                y = faceCentres[faceI].y();
+                field[faceI] = vector(-sin(tau/2*((x-xMin)/(xMax-xMin))), 0, 0);
+            }
+        #};
+    }
+    bottomWall
+    {
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    bottomPosSinProfile;
+
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+            #include "solutionDomain.H"
+        #};
+
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude \
+            -I$(FOAM_CASE)/system
+        #};
+
+        code
+        #{
+            const fvPatch& boundaryPatch = patch(); // Access to mesh information at patch
+            const vectorField& faceCentres = boundaryPatch.Cf(); // Recerence to face centres
+            vectorField& field = *this; // Reference to THIS vector field (patch one)
+
+            // scalar t = this->db().time().value(); // Access to time value
+
+            scalar x = 0;
+            scalar y = 0;
+
+            forAll(faceCentres, faceI)
+            {
+                x = faceCentres[faceI].x();
+                y = faceCentres[faceI].y();
+                field[faceI] = vector(sin(tau/2*((x-xMin)/(xMax-xMin))), 0, 0);
+            }
+        #};
+    }
+    leftWall
+    {
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    leftNegSinProfile;
+
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+            #include "solutionDomain.H"
+        #};
+
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude \
+            -I$(FOAM_CASE)/system
+        #};
+
+        code
+        #{
+            const fvPatch& boundaryPatch = patch(); // Access to mesh information at patch
+            const vectorField& faceCentres = boundaryPatch.Cf(); // Recerence to face centres
+            vectorField& field = *this; // Reference to THIS vector field (patch one)
+
+            // scalar t = this->db().time().value(); // Access to time value
+
+            scalar x = 0;
+            scalar y = 0;
+
+            forAll(faceCentres, faceI)
+            {
+                x = faceCentres[faceI].x();
+                y = faceCentres[faceI].y();
+                field[faceI] = vector(0, -sin(tau/2*((y-yMin)/(yMax-yMin))), 0);
+            }
+        #};
+    }
+    rightWall
+    {
+        type            codedFixedValue;
+        value           uniform ( 0 0 0 );
+        
+        redirectType    rightPosSinProfile;
+
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include <cmath>
+            #include <iostream>
+            #include "solutionDomain.H"
+        #};
+
+        codeOptions
+        #{
+            -I$(LIB_SRC)/finiteVolume/lnInclude \
+            -I$(LIB_SRC)/meshTools/lnInclude \
+            -I$(FOAM_CASE)/system
+        #};
+
+        code
+        #{
+            const fvPatch& boundaryPatch = patch(); // Access to mesh information at patch
+            const vectorField& faceCentres = boundaryPatch.Cf(); // Recerence to face centres
+            vectorField& field = *this; // Reference to THIS vector field (patch one)
+
+            // scalar t = this->db().time().value(); // Access to time value
+
+            scalar x = 0;
+            scalar y = 0;
+
+            forAll(faceCentres, faceI)
+            {
+                x = faceCentres[faceI].x();
+                y = faceCentres[faceI].y();
+                field[faceI] = vector(0, sin(tau/2*((y-yMin)/(yMax-yMin))), 0);
+            }
+        #};
+    }
+    frontAndBack
+    {
+        type            empty;
+    }
+}
