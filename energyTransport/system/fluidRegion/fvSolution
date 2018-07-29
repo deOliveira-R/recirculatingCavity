@@ -68,23 +68,46 @@ solvers
 PIMPLE
 {
     momentumPredictor           true;
-    nCorrectors                 1;
+    nCorrectors                 2;
     nNonOrthogonalCorrectors    0;
 
     pRefCell                    0;
     pRefValue                   1.01e5;
+
+    residualControl
+    {
+        U
+        {
+            tolerance   1e-5;
+            relTol      0;
+        }
+        p_rgh
+        {
+            tolerance   5e-4;
+            relTol      0;
+        }
+        h
+        {
+            tolerance   1e-5;
+            relTol      0;
+        }
+     }
 }
 
 relaxationFactors
 {
     fields
     {
-        
+        // p_rgh           1; Not implemented in GeN-Foam at the moment... I think
+        // p_rghFinal      1;
+        // "p_rgh.*"       1;
     }
     equations
     {
-        "h.*"       1;
-        "U.*"       1;
+        "U"             1;
+        "h"             1;
+        "(U|h)Final"    1;
+        // "(U|h).*"       1; No distinction for Final iteration... probably not a good idea.
     }
 }
 

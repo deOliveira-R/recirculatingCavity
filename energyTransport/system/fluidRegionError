@@ -21,14 +21,33 @@ type coded;
 // Name of on-the-fly generated functionObject
 name fluidRegionError;
 
-codeEnd
+codeInclude
+#{
+    #include "solutionDomainSpecifications.H"
+#};
+
+codeOptions
+#{
+    -I$(FOAM_CASE)/system
+#};
+
+//codeRead      // startup of the program
+//codeExecute   
+//codeWrite     
+codeEnd       // at the end
 #{
     // Lookup U
     Info<< "Looking up field U\n" << endl;
     const volVectorField& U = mesh().lookupObject<volVectorField>("U");
 
+    Info<< "Looking up time\n" << endl;
+    const Time& time = mesh().time();
+
     Info<< "Extracting mesh centres\n" << endl;
     const volVectorField& centres = U.mesh().C();
+
+    Info<< "Extracting mesh volumes\n" << endl;
+    const scalarField& V = U.mesh().V();
 
     volVectorField UA
     (
@@ -43,7 +62,7 @@ codeEnd
         U
     );
 
-    Info<< "\nEvaluating analytical solution at centres" << endl;
+    Info<< "Evaluating analytical solution at centres\n" << endl;
 
     scalar x = 0;
     scalar y = 0;
@@ -52,19 +71,44 @@ codeEnd
     {
         x = centres[i].x();
         y = centres[i].y();
-        UA[i] = vector(sin(x)*cos(y), -cos(x)*sin(y), 0);
+        UA[i] = vector( sin(tau/2*((x-xMin)/(xMax-xMin)))*cos(tau/2*((y-yMin)/(yMax-yMin))),
+                       -cos(tau/2*((x-xMin)/(xMax-xMin)))*sin(tau/2*((y-yMin)/(yMax-yMin))),
+                       0);
     }
+
+    UA.checkIn();
 
     // Force writing of UA (since time has not changed)
     UA.write();
 
-    Info<< "\nEvaluating relative error" << endl;
+    Info<< "Evaluating errors" << endl;
 
-    volScalarField UError("UError", mag(U - UA)/mag(UA));
+    volScalarField UErrorAbsolute("UErrorAbsolute", mag(U - UA));
 
-    Info<<"Writing relative error in U to " << UError.objectPath() << endl;
+    Info<<"Writing absolute error in U to " << UErrorAbsolute.objectPath() << endl;
 
-    UError.write();
+    UErrorAbsolute.write();
+
+    volScalarField UErrorRelative("UErrorRelative", UErrorAbsolute/mag(UA));
+
+    Info<<"Writing relative error in U to " << UErrorRelative.objectPath() << nl << endl;
+
+    UErrorRelative.write();
+
+    Info<< "Evaluating norms for U" << endl;
+
+    scalar UL1Norm = gSum(UErrorAbsolute*V)/gSum(V);
+    scalar UL2Norm = sqrt(gSum(pow(UErrorAbsolute,2)*V)/gSum(V));
+    scalar ULInfNorm = gMax(UErrorAbsolute);
+
+    Info<< "L1 norm: " << UL1Norm << endl;
+    Info<< "L2 norm: " << UL2Norm << endl;
+    Info<< "Linf norm: " << ULInfNorm << nl << endl;
+
+    OFstream normsU( time.path()/"normsU.dat" );
+    normsU << "L1;L2;Linf" << nl
+           << UL1Norm << ";" << UL2Norm << ";" << ULInfNorm << endl;
+
 
 /*****************************************************************************/
 
@@ -87,7 +131,7 @@ codeEnd
         p
     );
 
-    Info<< "\nEvaluating analytical solution at centres" << endl;
+    Info<< "Evaluating analytical solution at centres\n" << endl;
 
     scalar pZero = 1e5;
 
@@ -95,19 +139,41 @@ codeEnd
     {
         x = centres[i].x();
         y = centres[i].y();
-        pA[i] = pZero + rho[i]*(pow(cos(x),2) + pow(cos(y),2))/2;
+        pA[i] = pZero + rho[i]*(pow(cos(tau/2*((x-xMin)/(xMax-xMin))),2) + pow(cos(tau/2*((y-yMin)/(yMax-yMin))),2))/2;
     }
+
+    pA.checkIn();
 
     // Force writing of UA (since time has not changed)
     pA.write();
 
-    Info<< "\nEvaluating relative error" << endl;
+    Info<< "Evaluating relative error" << endl;
 
-    volScalarField pError("pError", mag(p - pA)/mag(pA));
+    volScalarField pErrorAbsolute("pErrorAbsolute", mag(p - pA));
 
-    Info<<"Writing relative error in p to " << pError.objectPath() << endl;
+    Info<<"Writing absolute error in p to " << pErrorAbsolute.objectPath() << endl;
 
-    pError.write();
+    pErrorAbsolute.write();
+
+    volScalarField pErrorRelative("pErrorRelative", pErrorAbsolute/mag(pA));
+
+    Info<<"Writing relative error in p to " << pErrorRelative.objectPath() << nl << endl;
+
+    pErrorRelative.write();
+
+    Info<< "Evaluating norms for p" << endl;
+
+    scalar pL1Norm = gSum(pErrorAbsolute*V)/gSum(V);
+    scalar pL2Norm = sqrt(gSum(pow(pErrorAbsolute,2)*V)/gSum(V));
+    scalar pLInfNorm = gMax(pErrorAbsolute);
+
+    Info<< "L1 norm: " << pL1Norm << endl;
+    Info<< "L2 norm: " << pL2Norm << endl;
+    Info<< "Linf norm: " << pLInfNorm << nl << endl;
+
+    OFstream normsp( time.path()/"normsp.dat" );
+    normsp << "L1;L2;Linf" << nl
+           << pL1Norm << ";" << pL2Norm << ";" << pLInfNorm << endl;
 
 /*****************************************************************************/
     // Lookup T
@@ -128,7 +194,7 @@ codeEnd
         T
     );
 
-    Info<< "\nEvaluating analytical solution at centres" << endl;
+    Info<< "Evaluating analytical solution at centres\n" << endl;
 
     scalar TBoundary = 1000;
     scalar deltaT = 100;
@@ -137,17 +203,39 @@ codeEnd
     {
         x = centres[i].x();
         y = centres[i].y();
-        TA[i] = TBoundary + deltaT*sin(x)*sin(y);
+        TA[i] = TBoundary + deltaT*sin(tau/2*((x-xMin)/(xMax-xMin)))*sin(tau/2*((y-yMin)/(yMax-yMin)));
     }
+
+    TA.checkIn();
 
     // Force writing of UA (since time has not changed)
     TA.write();
 
-    Info<< "\nEvaluating relative error" << endl;
+    Info<< "Evaluating relative error" << endl;
 
-    volScalarField TError("TError", mag(T - TA)/mag(TA));
+    volScalarField TErrorAbsolute("TErrorAbsolute", mag(T - TA));
 
-    Info<<"Writing relative error in T to " << TError.objectPath() << endl;
+    Info<<"Writing absolute error in T to " << TErrorAbsolute.objectPath() << endl;
 
-    TError.write();
+    TErrorAbsolute.write();
+
+    volScalarField TErrorRelative("TErrorRelative", TErrorAbsolute/mag(TA));
+
+    Info<<"Writing relative error in T to " << TErrorRelative.objectPath() << nl << endl;
+
+    TErrorRelative.write();
+
+    Info<< "Evaluating norms for T" << endl;
+
+    scalar TL1Norm = gSum(TErrorAbsolute*V)/gSum(V);
+    scalar TL2Norm = sqrt(gSum(pow(TErrorAbsolute,2)*V)/gSum(V));
+    scalar TLInfNorm = gMax(TErrorAbsolute);
+
+    Info<< "L1 norm: " << TL1Norm << endl;
+    Info<< "L2 norm: " << TL2Norm << endl;
+    Info<< "Linf norm: " << TLInfNorm << nl << endl;
+
+    OFstream normsT( time.path()/"normsT.dat" );
+    normsT << "L1;L2;Linf" << nl
+           << TL1Norm << ";" << TL2Norm << ";" << TLInfNorm << endl;
 #};
