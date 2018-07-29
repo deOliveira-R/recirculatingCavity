@@ -31,7 +31,12 @@ momentumSource
 
         codeInclude
         #{
-            
+            #include "solutionDomain.H"
+        #};
+
+        codeOptions
+        #{
+            -I$(FOAM_CASE)/system
         #};
 
         codeCorrect
@@ -41,20 +46,30 @@ momentumSource
 
         codeAddSup
         #{
-            //const Time& time = mesh().time();
-            const volVectorField& Centres = mesh_.C();
             vectorField& Usource = eqn.source();
-            //scalarField& heSource = eqn.source();
-            //const volScalarField& nu = mesh_.lookupObject<volScalarField>("nu");
-            //const volScalarField& rho = mesh_.lookupObject<volScalarField>("rho");
-            //volScalarField mu = nu*rho;
 
-            forAll(Centres, cellI)
+            const scalarField& V = mesh_.V();
+            const volVectorField& cellCentres = mesh_.C();
+            
+            const volScalarField& mu = mesh_.lookupObject<volScalarField>("thermo:mu");
+            const scalarField muCells(mu, cells_);
+            const volScalarField& rho_ = mesh_.lookupObject<volScalarField>("thermo:rho");
+            
+            scalar x = 0;
+            scalar y = 0;
+
+            vectorField force(cells_.size(), vector(0, 0, 0));
+            
+            forAll(cellCentres, cellI)
             {
-                Usource[cellI] += vector(0, -cos(Centres[cellI].x())*sin(Centres[cellI].y()), 0);
+                x = cellCentres[cellI].x();
+                y = cellCentres[cellI].y();
+                force[cellI] = vector(sin(x)*(rho_[cellI]*cos(x) + 2*mu[cellI]*cos(y)),
+                                      sin(y)*(rho_[cellI]*cos(y) - 2*mu[cellI]*cos(x)),
+                                      0);
             }
 
-            //heSource -= 0.1*sqr(time.value())*V;
+            Usource -= force*V;
         #};
 
         codeSetValue

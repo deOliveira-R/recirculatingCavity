@@ -71,7 +71,7 @@ PIMPLE
     nCorrectors      1;
     nNonOrthogonalCorrectors 0;
     pRefCell        0;
-    pRefValue       1e6;
+    pRefValue       1e5;
 }
 
 relaxationFactors
