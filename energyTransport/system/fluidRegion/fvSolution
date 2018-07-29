@@ -67,27 +67,24 @@ solvers
 
 PIMPLE
 {
-    momentumPredictor true;
-    nCorrectors      1;
-    nNonOrthogonalCorrectors 0;
-    pRefCell        0;
-    pRefValue       1e5;
+    momentumPredictor           true;
+    nCorrectors                 1;
+    nNonOrthogonalCorrectors    0;
+
+    pRefCell                    0;
+    pRefValue                   1.01e5;
 }
 
 relaxationFactors
 {
     fields
     {
-        rho             0.8;
-        p               0.40;
-        U               0.40;
-        T               0.6;
+        
     }
     equations
     {
-        "h.*"           0.5;
-        "U.*"           0.5;
-        "p_rgh.*"       0.5;
+        "h.*"       1;
+        "U.*"       1;
     }
 }
 

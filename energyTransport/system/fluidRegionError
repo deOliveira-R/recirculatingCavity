@@ -93,7 +93,9 @@ codeEnd
 
     forAll(pA, i)
     {
-        pA[i] = pZero;// - (rho[i]*(pow(cos(centres[i].x()), 2) + pow(cos(centres[i].y()), 2))/2) + 2*mu[i]*cos(centres[i].x())*cos(centres[i].y());
+        x = centres[i].x();
+        y = centres[i].y();
+        pA[i] = pZero + rho[i]*(pow(cos(x),2) + pow(cos(y),2))/2;
     }
 
     // Force writing of UA (since time has not changed)
@@ -101,7 +103,7 @@ codeEnd
 
     Info<< "\nEvaluating relative error" << endl;
 
-    volScalarField pError("pError", (p - pA)/pA);
+    volScalarField pError("pError", mag(p - pA)/mag(pA));
 
     Info<<"Writing relative error in p to " << pError.objectPath() << endl;
 
@@ -143,7 +145,7 @@ codeEnd
 
     Info<< "\nEvaluating relative error" << endl;
 
-    volScalarField TError("TError", (T - TA)/TA);
+    volScalarField TError("TError", mag(T - TA)/mag(TA));
 
     Info<<"Writing relative error in T to " << TError.objectPath() << endl;
 

@@ -31,6 +31,7 @@ ddtSchemes
 
 gradSchemes
 {
+    // <optional limiter> Gauss <interpolation scheme>
     default Gauss linear;
     grad(U)             Gauss linear;
     grad(p_rgh)         Gauss linear;
@@ -40,27 +41,26 @@ gradSchemes
 
 divSchemes
 {
+    // Gauss <interpolation scheme>
     default none;
     div(phi,U)          Gauss linearUpwind grad(U);
     div(phi,K)          Gauss linearUpwind default;
     div(phi,h)          Gauss linearUpwind grad(h);
-    //div(phi,h)          Gauss linear;
     div(((rho*nuEff)*dev2(T(grad(U))))) Gauss linear;
-
-    //div(U)              Gauss linear; // postProcessing
 }
 
 laplacianSchemes
 {
+    // Gauss <interpolation scheme> <snGradScheme>
     default none;
-    laplacian(muEff,U)      Gauss linear limited corrected 0.333;
-    laplacian(Dp,p_rgh)     Gauss linear limited corrected 0.333;
-    laplacian(alphaEff,h)   Gauss linear limited corrected 0.333;
-    laplacian(DkEff,k)      Gauss linear limited corrected 0.333;
-    laplacian(DepsilonEff,epsilon)  Gauss linear limited corrected 0.333;
-    laplacian(DREff,R)              Gauss linear limited corrected 0.333;
-    laplacian((rho*nuEff),U)        Gauss linear limited corrected 0.333;
-    laplacian(thermo:alpha,h)       Gauss linear limited corrected 0.333;
+    laplacian(muEff,U)              Gauss linear default;
+    laplacian(Dp,p_rgh)             Gauss linear orthogonal;
+    laplacian(alphaEff,h)           Gauss linear default;
+    laplacian(DkEff,k)              Gauss linear default;
+    laplacian(DepsilonEff,epsilon)  Gauss linear default;
+    laplacian(DREff,R)              Gauss linear default;
+    laplacian((rho*nuEff),U)        Gauss linear orthogonal;
+    laplacian(thermo:alpha,h)       Gauss linear orthogonal;
 }
 
 interpolationSchemes
@@ -75,14 +75,14 @@ interpolationSchemes
 
 snGradSchemes
 {
-    default none;
-    snGrad(p_rgh)       limited corrected 0.333;
-    snGrad((rho*rhok))  limited corrected 0.333;
+    default orthogonal;
+    //snGrad(p_rgh)       orthogonal;
+    //snGrad((rho*rhok))  orthogonal;
 }
 
 fluxRequired
 {
-    default         no;
+    default false;
     p_rgh;
 }
 
