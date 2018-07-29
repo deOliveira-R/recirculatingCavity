@@ -21,20 +21,39 @@ type coded;
 // Name of on-the-fly generated functionObject
 name neutroRegionError;
 
+codeInclude
+#{
+    #include "solutionDomainSpecifications.H"
+#};
+
+codeOptions
+#{
+    -I$(FOAM_CASE)/system
+#};
+
+//codeRead
+//codeExecute
+//codeWrite
 codeEnd
 #{
     // Lookup flux0
     Info<< "Looking up field flux0\n" << endl;
     const volScalarField& flux0 = mesh().lookupObject<volScalarField>("flux0");
-    
+
+    Info<< "Looking up time\n" << endl;
+    const Time& time = mesh().time();
+
     Info<< "Extracting mesh centres\n" << endl;
     const volVectorField& centres = flux0.mesh().C();
 
-    volScalarField fluxA
+    Info<< "Extracting mesh volumes\n" << endl;
+    const scalarField& V = flux0.mesh().V();
+
+    volScalarField flux0A
     (
         IOobject
         (
-            "fluxA",
+            "flux0A",
             mesh().time().timeName(),
             flux0.mesh(),
             IOobject::NO_READ,
@@ -43,28 +62,50 @@ codeEnd
         flux0
     );
 
-    Info<< "\nEvaluating analytical solution at centres" << endl;
+    Info<< "Evaluating analytical solution at centres\n" << endl;
 
-    scalar fluxZero = 1e7;
+    scalar fluxZero = 1e4;
 
     scalar x = 0;
     scalar y = 0;
 
-    forAll(fluxA, i)
+    forAll(flux0A, i)
     {
         x = centres[i].x();
         y = centres[i].y();
-        fluxA[i] = fluxZero*sin(x)*sin(y);
+        flux0A[i] = fluxZero*sin(tau/2*((x-xMin)/(xMax-xMin)))*sin(tau/2*((y-yMin)/(yMax-yMin)));
     }
 
+    flux0A.checkIn();
+
     // Force writing of fluxA (since time has not changed)
-    fluxA.write();
+    flux0A.write();
 
-    Info<< "\nEvaluating relative error" << endl;
+    Info<< "Evaluating errors" << endl;
 
-    volScalarField fluxError("fluxError", (flux0 - fluxA)/fluxA);
+    volScalarField flux0ErrorAbsolute("flux0ErrorAbsolute", mag(flux0 - flux0A));
 
-    Info<<"Writing relative error in flux to " << fluxError.objectPath() << endl;
+    Info<<"Writing absolute error in flux0 to " << flux0ErrorAbsolute.objectPath() << endl;
 
-    fluxError.write();
+    flux0ErrorAbsolute.write();
+
+    volScalarField flux0ErrorRelative("flux0ErrorRelative", flux0ErrorAbsolute/mag(flux0A));
+
+    Info<<"Writing relative error in flux0 to " << flux0ErrorRelative.objectPath() << nl << endl;
+
+    flux0ErrorRelative.write();
+
+    Info<< "Evaluating norms for flux0" << endl;
+
+    scalar flux0L1Norm = gSum(flux0ErrorAbsolute*V)/gSum(V);
+    scalar flux0L2Norm = sqrt(gSum(pow(flux0ErrorAbsolute,2)*V)/gSum(V));
+    scalar flux0LInfNorm = gMax(flux0ErrorAbsolute);
+
+    Info<< "L1 norm: " << flux0L1Norm << endl;
+    Info<< "L2 norm: " << flux0L2Norm << endl;
+    Info<< "Linf norm: " << flux0LInfNorm << nl << endl;
+
+    OFstream normsflux0( time.path()/"normsflux0.dat" );
+    normsflux0 << "L1;L2;Linf" << nl
+              << flux0L1Norm << ";" << flux0L2Norm << ";" << flux0LInfNorm << endl;
 #};

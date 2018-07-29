@@ -64,9 +64,9 @@ momentumSource
             {
                 x = cellCentres[cellI].x();
                 y = cellCentres[cellI].y();
-                force[cellI] = vector(2*mu[cellI]*sin(x)*cos(y),
-                                      -2*mu[cellI]*cos(x)*sin(y),
-                                      0);
+                force[cellI] = vector( 2*mu[cellI]*sin(tau/2*((x-xMin)/(xMax-xMin)))*cos(tau/2*((y-yMin)/(yMax-yMin))),
+                                      -2*mu[cellI]*cos(tau/2*((x-xMin)/(xMax-xMin)))*sin(tau/2*((y-yMin)/(yMax-yMin))),
+                                       0);
             }
 
             Usource -= force*V;

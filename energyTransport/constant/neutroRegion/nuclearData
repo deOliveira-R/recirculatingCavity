@@ -22,8 +22,6 @@ precGroups      1;
 rhoCoolRef  1000;
 TfuelRef    1000;
 
-pTarget     4e4;
-
 zones
 (
     cavity
