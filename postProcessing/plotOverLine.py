@@ -4,6 +4,7 @@ Spyder Editor
 
 This is a temporary script file.
 """
+standard = True
 
 import numpy as np
 import matplotlib as mpl
@@ -46,16 +47,24 @@ mpl.rcParams.update(pgf_with_latex)
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-sns.set()
 
-def savefig(filename):
-    plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
-    plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+if standard:
+    sns.set()
 
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+else:
+    sns.set(rc={'axes.facecolor':'#bbbbbb', 'figure.facecolor':'#bbbbbb'})
+
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
+    
 path = '../Documentation/3_results_and_discussion/figures/'
 #path = ''
 
-folder = '../energyTransport_100_sym/postProcessing/'
+folder = '../mesh_100/postProcessing/'
 file = 'fluidRegionSingleGraphAA/fluidRegion/50/line_mag(U)_p_T_mag(UA)_pA_TA_UErrorAbsolute_pErrorAbsolute_TErrorAbsolute.xy'
 scalar = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'mag(U)', 'p', 'T', 'mag(UA)', 'pA', 'TA', 'UError', 'pError', 'TError'])
 scalar['UError'] = scalar['UError']/scalar['mag(UA)']*100

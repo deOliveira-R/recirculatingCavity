@@ -4,6 +4,7 @@ Spyder Editor
 
 This is a temporary script file.
 """
+standard = True
 
 import numpy as np
 from scipy.optimize import curve_fit
@@ -47,17 +48,25 @@ mpl.rcParams.update(pgf_with_latex)
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-sns.set()
 
-def savefig(filename):
-    plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
-    plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+if standard:
+    sns.set()
+
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+else:
+    sns.set(rc={'axes.facecolor':'#bbbbbb', 'figure.facecolor':'#bbbbbb'})
+
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
     
 path = '../Documentation/3_results_and_discussion/figures/'
 #path = ''
 
 run = {'mesh': np.array([25, 50, 100, 200]),
-       'wall time': np.array([43, 48, 180, 1946])}
+       'wall time': np.array([34, 50, 177, 1586])}
 
 # x = np.linspace(0, 500, 5)
 
