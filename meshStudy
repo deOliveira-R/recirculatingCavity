@@ -1,0 +1,59 @@
+#!/bin/bash
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Meshes
+fluidMechanics="fluidRegion"
+neutronics="neutroRegion"
+thermoMechanics="thermoMechanicalRegion"
+
+caseName="mesh"
+
+caseCells=( 25 50 100 200 )
+caseTimeSteps=( 0.1 0.05 0.025 0.0125 )
+
+modifyMesh() # $1 = case folder, $2 = number of cells
+{
+    printf "Modifying mesh of case $1 to $2 uniform cells..."
+
+    meshDict="$1/system/fluidRegion/blockMeshDict"
+    sed s/"50 50 1"/"$2 $2 1"/g $meshDict > temp.$$
+    mv temp.$$ $meshDict
+
+    meshDict="$1/system/neutroRegion/blockMeshDict"
+    sed s/"50 50 1"/"$2 $2 1"/g $meshDict > temp.$$
+    mv temp.$$ $meshDict
+
+    printf "Mesh modified!\n"
+}
+
+modifyTimeStep() # $1 = case folder, $2 = new time step
+{
+    printf "Modifying time step of case $1 to $2 seconds...\n"
+    # foamDictionary $1/system/controlDict -entry deltaT -set 0.05
+    controlDict="$1/system/controlDict"
+    sed \
+    -e s/"\(deltaT[ \t]*\) 0.05;"/"\1 $2;"/g \
+    $controlDict > temp.$$
+    mv temp.$$ $controlDict
+    printf "Time step modified!\n\n"
+}
+
+for ((i=0;i<${#caseCells[@]};++i));
+do
+    printf "Preparing to run case with mesh ${caseCells[i]}...\n"
+
+    thisCase="${caseName}_${caseCells[i]}"
+
+    printf "Cloning rootCase to case $thisCase..."
+    cp -r rootCase $thisCase
+    printf "rootCase cloned!\n"
+
+    modifyMesh $thisCase ${caseCells[i]}
+    modifyTimeStep $thisCase ${caseTimeSteps[i]}
+
+    printf "Running $thisCase\n"
+    ( cd $thisCase && ./Allrun )
+done

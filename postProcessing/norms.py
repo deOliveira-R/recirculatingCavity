@@ -4,6 +4,7 @@ Spyder Editor
 
 This is a temporary script file.
 """
+standard = True
 
 import numpy as np
 import matplotlib as mpl
@@ -46,15 +47,23 @@ mpl.rcParams.update(pgf_with_latex)
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
-sns.set()
 
-def savefig(filename):
-    plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
-    plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+if standard:
+    sns.set()
+
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight')
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight')
+else:
+    sns.set(rc={'axes.facecolor':'#bbbbbb', 'figure.facecolor':'#bbbbbb'})
+
+    def savefig(filename):
+        plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
+        plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
 
 meshes = np.array([25, 50, 100, 200])
 spacing = meshes/meshes[0]
-parameters = {'file': ['U', 'p', 'T', 'flux'],
+parameters = {'file': ['U', 'p', 'T', 'flux0'],
               'title': ['Velocity', 'Pressure', 'Temperature', 'Flux']
               }
 
@@ -65,7 +74,7 @@ path = '../Documentation/3_results_and_discussion/figures/'
 
 for file, title in zip(parameters['file'], parameters['title']):
     # Read norm files into a list of dataframes
-    norms_list = [pd.read_csv("../energyTransport" + "_{}/".format(mesh) + "norms{}.dat".format(file), sep=';') for mesh in meshes]
+    norms_list = [pd.read_csv("../mesh" + "_{}/".format(mesh) + "norms{}.dat".format(file), sep=';') for mesh in meshes]
     # Concatenate the dataframes into one
     norms[file] = pd.concat(norms_list, ignore_index=False)
     norms[file]['mesh'] = meshes
