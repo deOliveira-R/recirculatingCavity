@@ -17,7 +17,7 @@ FoamFile
 
 // General
 
-application         GeN-Foam;
+application         genFoam;
 
 //startFrom           startTime;
 startFrom           latestTime;
@@ -85,11 +85,11 @@ maxPowerVariation   0.025; //max power variation in each time step
 
 functions
 {
-    #includeFunc fluidRegionResiduals
-    #includeFunc fluidRegionMinMaxMagnitude
-    #includeFunc fluidRegionError
+    #includeFunc fluidDynamicsResiduals
+    #includeFunc fluidDynamicsMinMaxMagnitude
+    #includeFunc fluidDynamicsError
 
-    #includeFunc neutroRegionError
+    #includeFunc neutronTransportError
 }
 
 
