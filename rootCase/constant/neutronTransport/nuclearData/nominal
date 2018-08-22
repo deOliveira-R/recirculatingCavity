@@ -12,8 +12,8 @@ FoamFile
     object      nuclearData/nominal;
 }
 
-energyGroups    1;
-precGroups      1;
+energyGroups        1;
+precursorGroups     1;
 
 rhoCoolRef  1000;
 TFuelRef    1000;
@@ -23,22 +23,20 @@ zones
     cavity
     {
         D               nonuniform List<scalar> 1 ( 2e-02 );
-        nuSigmaF        nonuniform List<scalar> 1 ( 1.04 );
-        kappaFission    nonuniform List<scalar> 1 ( 1 );
         sigmaRem        nonuniform List<scalar> 1 ( 1 );
         scatteringMatrix  1  1 (
             ( 1.566666e+01 )
         );
+        nuSigmaF        nonuniform List<scalar> 1 ( 1.04 );
+        kappaFission    nonuniform List<scalar> 1 ( 1 );
 
-        discFactor      nonuniform List<scalar> 1 ( 1 );
-        IV              nonuniform List<scalar> 1 ( 1E-07 );
         chiPrompt       nonuniform List<scalar> 1 ( 1 );
         chiDelayed      nonuniform List<scalar> 1 ( 0 );
+        IV              nonuniform List<scalar> 1 ( 1E-07 );
+        discFactor      nonuniform List<scalar> 1 ( 1 );
 
         beta            nonuniform List<scalar> 1 ( 0 );
         lambda          nonuniform List<scalar> 1 ( 1.246670E-02 );
-
-        integralFlux    nonuniform List<scalar> 1 ( 1 );
-        ScNo 2e8;
+        ScNo            2e8;
     }
 }

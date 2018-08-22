@@ -67,14 +67,6 @@ solveThermalMechanics   false;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// Global simulation options
-
-compr       false;
-
-liquidFuel  true;
-
-// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 // Solution control
 
 maxCo               1;

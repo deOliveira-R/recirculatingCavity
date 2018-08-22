@@ -19,6 +19,8 @@ SP3Neutronics           false;
 
 eigenvalueNeutronics    true;
 
+advectingFuel           false;
+
 fastNeutrons            true;
 
 adjustDiscFactors       false;
