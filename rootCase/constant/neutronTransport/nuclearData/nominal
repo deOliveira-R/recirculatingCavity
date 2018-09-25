@@ -34,6 +34,7 @@ zones
         chiDelayed      nonuniform List<scalar> 1 ( 0 );
         IV              nonuniform List<scalar> 1 ( 1E-07 );
         discFactor      nonuniform List<scalar> 1 ( 1 );
+        integralFlux    nonuniform List<scalar> 1 ( 1 );
 
         beta            nonuniform List<scalar> 1 ( 0 );
         lambda          nonuniform List<scalar> 1 ( 1.246670E-02 );

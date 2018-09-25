@@ -15,12 +15,10 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// General
-
 application         genFoam;
 
-//startFrom           startTime;
-startFrom           latestTime;
+startFrom           startTime;
+//startFrom           latestTime;
 
 startTime           0;
 

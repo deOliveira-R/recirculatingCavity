@@ -73,7 +73,7 @@ PIMPLE
     pRefCell    0;
     pRefValue   1.01e5;
 
-    residualControl
+    outerCorrectorResidualControl
     {
         U
         {

@@ -18,14 +18,14 @@ FoamFile
 ddtSchemes
 {
     default none;
-    ddt(porosity,p_rgh)     Euler;
-    ddt(porosity,rho)       Euler;
+    ddt(porousMediumModel<porosity,p_rgh)     Euler;
+    ddt(porousMediumModel<porosity,rho)       Euler;
     ddt(rho,U)              Euler;
-    ddt((rho*porosity),K)   steadyState;
-    ddt((rho*porosity),h)   steadyState;
+    ddt((rho*porousMediumModel<porosity),K)   steadyState;
+    ddt((rho*porousMediumModel<porosity),h)   steadyState;
     //ddt((rho*porosity),K)  Euler;
     //ddt((rho*porosity),h)  Euler;
-    ddt(externalRhoCp,TStructures)  Euler;
+    ddt(porousMediumModel<externalRhoCp,TStructures)  Euler;
 
 }
 
@@ -61,16 +61,18 @@ laplacianSchemes
     laplacian(DREff,R)              Gauss linear default;
     laplacian((rho*nuEff),U)        Gauss linear orthogonal;
     laplacian(thermo:alpha,h)       Gauss linear orthogonal;
+    laplacian(alphahe,h)            Gauss linear orthogonal;
 }
 
 interpolationSchemes
 {
     default none;
-    interpolate(porosity)                  linear;
-    interpolate(((porosity*rho)*rAU)) linear;
+    interpolate(porousMediumModel<porosity)                  linear;
+    interpolate(((porousMediumModel<porosity*rho)*rAU)) linear;
     dotInterpolate(S,(rho_0*U_0))       linear;
     interpolate((rho*HbyA))             linear;
     flux((rho*HbyA))                    linear;
+    interpolate(rho_0)                  linear;
 }
 
 snGradSchemes

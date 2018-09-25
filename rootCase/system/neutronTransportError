@@ -37,8 +37,8 @@ codeOptions
 codeEnd
 #{
     // Lookup flux0
-    Info<< "Looking up field flux0\n" << endl;
-    const volScalarField& flux0 = mesh().lookupObject<volScalarField>("flux0");
+    Info<< "Looking up field discFlux0\n" << endl;
+    const volScalarField& flux0 = mesh().lookupObject<volScalarField>("discFlux0");
 
     Info<< "Looking up time\n" << endl;
     const Time& time = mesh().time();
@@ -89,7 +89,7 @@ codeEnd
 
     flux0ErrorAbsolute.write();
 
-    volScalarField flux0ErrorRelative("flux0ErrorRelative", flux0ErrorAbsolute/mag(flux0A));
+    volScalarField flux0ErrorRelative("flux0ErrorRelative", flux0ErrorAbsolute/mag(flux0A + dimensionedScalar("", flux0A.dimensions(), SMALL)));
 
     Info<<"Writing relative error in flux0 to " << flux0ErrorRelative.objectPath() << nl << endl;
 
