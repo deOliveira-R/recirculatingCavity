@@ -1,0 +1,32 @@
+\input{Elsevier_theme/theme} % Editor packages and configuration
+\input{preamble} % Personal packages
+
+\begin{document}
+
+\begin{frontmatter}
+
+\input{0_head/info} % journal, title, author, etc
+\input{0_head/abstract_and_keywords}
+
+\end{frontmatter}
+
+%********** main matter *********%
+
+\linenumbers
+
+\input{1_introduction/introduction}
+
+\input{2_materials_and_methods/case_specification}
+\input{2_materials_and_methods/post_processing_specification}
+
+\input{3_results_and_discussion/results_and_discussion}
+
+\input{4_conclusion/conclusion}
+
+%********** Back matter **********%
+
+\input{5_tail/bibliography}
+
+\printnomenclature
+
+\end{document}

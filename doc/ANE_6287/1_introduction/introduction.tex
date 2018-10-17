@@ -1,0 +1,20 @@
+% !TEX root = ../article.tex
+
+\section{Introduction}
+
+GeN-Foam is a relatively new multiphysics code \cite{fiorina_gen-foam:_2015} using the OpenFOAM library for finite volume method \cite{weller_tensorial_1998} for modelling nuclear reactors.
+Being such a recent code, very little verification has been done \cite{fiorina_gen-foam:_2015, fiorina_development_2016, fiorina_extension_2017} and the ones done were limited to code-to-code benchmarks, which cannot assert correctness of the code, making it a weak form of verification \cite{oberkampf_role_2003}.
+It is important that rigorous verification efforts start and procedures are implemented to allow a sustainable development of the code.
+We recognize that other projects might be in a similar position, where a new code is under development and verification will be needed to build up a reliable piece of software.
+This study targets codes at a stage of development similar to GeN-Foam, where the code is apparently working and returning reasonable outputs, but formal evidence of correctness is lacking.
+
+The body of literature in scientific code verification is fairly rich, with particularly notable works done by Knupp, Oberkampf, Roache and Salari \cite{oberkampf_verification_2010, knupp_verification_2002, roache_verification_1998}.
+Although the literature has a major focus on computational fluid dynamics, mostly done by the aerospace industry, there are examples available of verification done for radiation transport codes \cite{pautz_verification_2001, schunert_two-dimensional_2011, wang_application_2016}.
+
+As a multiphysics code modelling different phenomena, GeN-Foam is harder to verify than a usual code that solves only radiation transport or fluid mechanics separately.
+As a first approach, compromises in test coverage were made in order to build up evidence that essential functions of the code are working correctly, namely the fluid dynamics and neutron diffusion solvers.
+In this work, the intention is to verify GeN-Foam in a simplified homogenous system, targeting reactors such as the Molten Salt Fast Reactor, undergoing studies by the SAMOFAR project \cite{samofar_paradigm_2015}.
+
+Code verification can be divided into 2 recognized branches: numerical algorithm verification and software quality assurance (SQA) \cite[page 47]{oberkampf_verification_2010}.
+Numerical algorithm verification, produces evidence that numerical algorithms in the code are implemented correctly and functioning as intended, which is the main objective of this study.
+A secondary objective is to transform the test case into a regression test, which is part of SQA, allowing continuous testing of the code during further developments.

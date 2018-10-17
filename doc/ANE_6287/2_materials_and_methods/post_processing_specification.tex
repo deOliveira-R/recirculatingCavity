@@ -1,0 +1,26 @@
+% !TEX root = ../article.tex
+
+\subsection{Post processing specification}
+
+Field data for velocity, pressure, temperature and flux are shown in figures \ref{fig:flux0}-\ref{fig:T} and used as a qualitative demonstration of the shape of the fields.
+The fields for the analytical solutions will not be shown because there is no visual difference from the numerical solution fields.
+
+The absolute error field is calculated subtracting the numerical solution field from the analytical solution field taking the absolute value as $ \abs{ r_{n} - r_{ n,\text{ref} } } $, where $ r_{n} $ is the numerical value of a response in cell n, and $ r_{ n,\text{ref} } $ is the analytical value of the response in the same cell.
+The error fields will not be shown for brevity.
+
+Plots over line AA' shown in figure \ref{fig:domain} for all numerical, analytical and their respective relative error ($ \abs{ r_{n} - r_{ n,\text{ref} } }/r_{ n,\text{ref} } \cdot 100\% $) will be shown, allowing a quantitative evaluation of the results.
+
+In addition, $ \text{L}_{1} $ and $ \text{L}_{2} $ norms are calculated as shown in equations \ref{eqn:L1norm} and \ref{eqn:L2norm}, where $ \omega_{n} $ is the cell volume and $ \Omega $ is the domain volume.
+
+\begin{equation}
+    \LOneNorm
+\end{equation}
+
+\begin{equation}
+    \LTwoNorm
+\end{equation}
+
+As can be seen, the $ \text{L}_{1} $ norm represents the mean volume-weighted absolute error, and the $ \text{L}_{2} $ norm the root-mean-square of the volume-weighted absolute error.
+For the particular case of uniform meshes, as used in this study, the equations for the norms degenerate into simple averages over the cells.
+Nonetheless, the equations are coded as presented, accounting for possible future developments using a non-uniform grid.
+These norms are used for a sensitivity study of the mesh and to evaluate mesh convergence.

@@ -1,0 +1,107 @@
+% !TEX root = ../article.tex
+
+\newcommand{\minimum}{
+(x_{min},y_{min}) = {-\pi/2,-\pi/2}
+\label{eqn:xymin}
+}
+
+\newcommand{\conservationMass}{
+\nabla \cdot \vec{u} = 0
+\label{eqn:conservationMass}
+}
+
+\newcommand{\conservationMomentum}{
+\rho (\vec{u} \cdot \nabla) \vec{u} - \mu \nabla^2 \vec{u} = - \nabla P + \vec{F}
+\label{eqn:conservationMomentum}
+}
+
+\newcommand{\conservationEnergy}{
+\rho c_{p} (\vec{u} \cdot \nabla) T - k \nabla^2 T = \gamma \phi
+\label{eqn:conservationEnergy}
+}
+
+\newcommand{\neutronDiffusion}{
+\nabla^2 \phi + B^2 \phi = 0
+\label{eqn:neutronDiffusion}
+}
+
+\newcommand{\xyParametrization}{
+\begin{aligned}
+    \alpha(x) &= \frac{\pi}{a} (x - x_{\text{min}}) \\
+     \beta(y) &= \frac{\pi}{b} (y - y_{\text{min}})
+\end{aligned}
+\label{eqn:xyParametrization}
+}
+
+\newcommand{\solutionVelocity}{
+\begin{aligned}
+    u_{x}(x,y) &=  \sin(\alpha)\cos(\beta) \\
+    u_{y}(x,y) &= -\cos(\alpha)\sin(\beta)
+\end{aligned}
+\label{eqn:solutionVelocity}
+}
+
+\newcommand{\solutionPressure}{
+P(x,y) = P_{\text{c}} + \rho \frac{\cos^2(\alpha) + \cos^2(\beta)}{2}
+\label{eqn:solutionPressure}
+}
+
+\newcommand{\solutionTemperature}{
+T(x,y) = T_{\text{b}} + \Delta T_{\text{c}} \sin(\alpha)\sin(\beta)
+\label{eqn:solutionTemperature}
+}
+
+\newcommand{\solutionFlux}{
+\phi(x,y) = \phi_{\text{c}} \sin(\alpha)\sin(\beta)
+\label{eqn:solutionFlux}
+}
+
+\newcommand{\momentumForcingTerms}{
+\vec{F} = 2 \mu \vec{u}
+\label{eqn:momentumForcingTerms}
+}
+
+\newcommand{\BCvelocity}{
+\begin{aligned}
+    &u_{x}(x,-\pi/2) =  \sin(\alpha) \\
+    &u_{x}(x,\pi/2)  = -\sin(\alpha) \\
+    &u_{y}(-\pi/2,y) = -\sin(\beta)  \\
+    &u_{y}(\pi/2,y)  =  \sin(\beta)
+\end{aligned}
+\label{eqn:BCvelocity}
+}
+
+\newcommand{\bucklingGeometrical}{
+B_{\text{g}}^2 = \left( \frac{\pi}{a} \right)^2 + \left( \frac{\pi}{b} \right)^2
+\label{eqn:bucklingGeometrical}
+}
+
+\newcommand{\bucklingMaterial}{
+B_{\text{m}}^2 = \frac{\frac{\overline{\nu} \Sigma_{\text{f}}}{k_{\text{eff}}} - \Sigma_{\text{a}}}{D}
+\label{eqn:bucklingMaterial}
+}
+
+\newcommand{\diffusionCoefficient}{
+D = \frac{1}{3(\Sigma_{\text{s}} + \Sigma_{\text{a}})}
+\label{eqn:diffusionCoefficient}
+}
+
+\newcommand{\deltaT}{
+\gamma \phi_{\text{c}} = 2k \Delta T_{\text{c}} \left( \left(\frac{\pi}{a}\right)^{2} + \left(\frac{\pi}{b}\right)^{2} \right) \\
+\label{eqn:deltaT}
+}
+
+\newcommand{\integralFlux}{
+\Phi = \int_{0}^{1} \int_{-\pi/2}^{\pi/2} \int_{-\pi/2}^{\pi/2} \phi_{\text{c}} \sin(\alpha)\sin(\beta) dx dy dz = 4 \phi_{\text{c}}
+\label{eqn:integralFlux}
+}
+
+\newcommand{\LOneNorm}{
+\norm{r - r_{ \text{ref} } }_{1} = \frac{1}{\Omega} \sum_{n=1}^{N} \omega_{n} \abs{ r_{n} - r_{ n,\text{ref} } }
+\label{eqn:L1norm}
+}
+
+\newcommand{\LTwoNorm}{
+\norm{ r - r_{ \text{ref} } }_{2} = \left( \frac{1}{\Omega} \sum_{n=1}^{N} \omega_{n} \abs{ r_{n} - r_{ n,\text{ref} } }^{2} \right) ^{\frac{1}{2}}
+\label{eqn:L2norm}
+}
