@@ -14,12 +14,54 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+solvers
+{
+    ".*"
+    {
+        solver          PCG;
+        preconditioner  FDIC;
+        tolerance       1e-06;
+        relTol          0.001;
+        /*
+        solver          GAMG;
+        tolerance       1e-06;
+        relTol          0.001;
+        smoother        GaussSeidel;
+        cacheAgglomeration true;
+        nCellsInCoarsestLevel 50;
+        agglomerator    faceAreaPair;
+        mergeLevels     1;
+        processorAgglomerator masterCoarsest;
+        */
+    }
+    "fuelDisp"
+    {
+
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-5;
+        relTol          0.01;
+    }
+    "CRDisp"
+    {
+
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-5;
+        relTol          0.01;
+    }
+}
+
+stressAnalysis
+{
+    compactNormalStress true;
+    nCorrectors     3;
+    D               1e-06;
+}
+
 PIMPLE
 {
     nOuterCorrectors        1;
-    tightlyCoupled          false; // if true it iterates on energy, fuel temp, thermal-mechanics and neutronics (not necessary for very short time steps)
-    timeStepResidual        0.00005; // required accuracy for the coupling
-    maxTimeStepIterations   3;
 }
 
 // ************************************************************************* //

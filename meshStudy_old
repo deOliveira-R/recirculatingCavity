@@ -5,8 +5,9 @@ cd ${0%/*} || exit 1    # Run from this directory
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 # Meshes
-fluidDynamics="cavity"
+fluidDynamics="fluidDynamics"
 neutronTransport="neutronTransport"
+thermalMechanics="thermalMechanics"
 
 caseName="mesh"
 
@@ -21,7 +22,7 @@ modifyMesh() # $1 = case folder, $2 = number of cells
     sed s/"50 50 1"/"$2 $2 1"/g $meshDict > temp.$$
     mv temp.$$ $meshDict
 
-    meshDict="$1/system/$fluidDynamics/$neutronTransport/blockMeshDict"
+    meshDict="$1/system/$neutronTransport/blockMeshDict"
     sed s/"50 50 1"/"$2 $2 1"/g $meshDict > temp.$$
     mv temp.$$ $meshDict
 

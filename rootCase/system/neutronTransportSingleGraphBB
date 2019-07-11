@@ -58,7 +58,7 @@ setFormat   raw;
 
 setConfig
 {
-    type    uniform;   // uniform, midPoint, midPointAndFace
+    type    lineUniform;   // lineUniform, midPoint, midPointAndFace
     axis    y;  // distance, x, y, z, xyz
     nPoints 100;
 }

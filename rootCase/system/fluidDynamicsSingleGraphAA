@@ -58,12 +58,12 @@ setFormat   raw;
 
 setConfig
 {
-    type    uniform;   // uniform, midPoint, midPointAndFace
+    type    lineUniform;   // lineUniform, midPoint, midPointAndFace
     axis    x;  // distance, x, y, z, xyz
     nPoints 100;
 }
 
-region fluidDynamics;
+region cavity;
 
 // Override settings here, e.g.
 // setConfig { type midPoint; }

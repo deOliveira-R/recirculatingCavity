@@ -14,7 +14,7 @@ Description
 
 #includeEtc "caseDicts/postProcessing/numerical/residuals.cfg"
 
-region fluidDynamics;
+region cavity;
 fields (p U);
 
 // ************************************************************************* //

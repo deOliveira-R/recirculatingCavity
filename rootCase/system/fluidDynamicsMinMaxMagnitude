@@ -13,7 +13,7 @@ Description
 
 #includeEtc "caseDicts/postProcessing/minMax/fieldMinMax.cfg"
 
-region fluidDynamics;
+region cavity;
 fields (U p);
 
 // ************************************************************************* //

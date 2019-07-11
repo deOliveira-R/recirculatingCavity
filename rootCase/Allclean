@@ -7,8 +7,7 @@ cd ${0%/*} || exit 1    # Run from this directory
 
 cleanCase
 
-foamCleanPolyMesh -region fluidDynamics
-foamCleanPolyMesh -region neutronTransport
-foamCleanPolyMesh -region thermalMechanics
+foamCleanPolyMesh -region cavity
+foamCleanPolyMesh -region cavity/neutronTransport
 
 rm -f *.dat *.foam

@@ -9,9 +9,9 @@ cd ${0%/*} || exit 1    # Run from this directory
 
 runApplication $(getApplication)
 
-postProcess -region fluidDynamics -funcs '(mag(U) mag(UA))' >> log.postProcess.fluidDynamics 2>&1
-postProcess -region fluidDynamics -func fluidDynamicsSingleGraphAA >> log.postProcess.fluidDynamics 2>&1
-postProcess -region fluidDynamics -func fluidDynamicsSingleGraphBB >> log.postProcess.fluidDynamics 2>&1
+postProcess -region cavity -funcs '(mag(U) mag(UA))' >> log.postProcess.cavity 2>&1
+postProcess -region cavity -func fluidDynamicsSingleGraphAA >> log.postProcess.cavity 2>&1
+postProcess -region cavity -func fluidDynamicsSingleGraphBB >> log.postProcess.cavity 2>&1
 
-postProcess -region neutronTransport -func neutronTransportSingleGraphAA >> log.postProcess.neutronTransport 2>&1
-postProcess -region neutronTransport -func neutronTransportSingleGraphBB >> log.postProcess.neutronTransport 2>&1
+# postProcess -region cavity/neutronTransport -func neutronTransportSingleGraphAA >> log.postProcess.cavity.neutronTransport 2>&1
+# postProcess -region cavity/neutronTransport -func neutronTransportSingleGraphBB >> log.postProcess.cavity.neutronTransport 2>&1
