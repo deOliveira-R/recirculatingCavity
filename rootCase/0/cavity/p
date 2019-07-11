@@ -11,36 +11,21 @@ FoamFile
     format      ascii;
     class       volScalarField;
     location    "0/fluidRegion";
-    object      T;
+    object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 0 0 1 0 0 0];
+dimensions      [1 -1 -2 0 0 0 0];
 
-internalField   uniform 1000;
+internalField   uniform 1e5;
 
 boundaryField
 {
-    topWall
+    ".*Wall"
     {
-        type    fixedValue;
-        value   uniform 1000;
+        type            zeroGradient;
     }
-    bottomWall
-    {
-        type    fixedValue;
-        value   uniform 1000;
-    }
-    leftWall
-    {
-        type    fixedValue;
-        value   uniform 1000;
-    }
-    rightWall
-    {
-        type    fixedValue;
-        value   uniform 1000;
-    }
+
     frontAndBack
     {
         type            empty;

@@ -9,28 +9,31 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    location    "0/thermoMechanicalRegion";
-    object      Disp;
+    class       dictionary;
+    location    "constant";
+    object      solidPorousProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [0 1 0 0 0 0 0];
+// constants needed to calculate fluid flow in regions treated as porous medium
+// all cellZones must be included
+// by not defining one of the properties, a default value will be used corresponding to a region of clear fluid
 
-internalField   uniform (0 0 0);
+model   solidByZoneCorrelation;
 
-
-boundaryField
+zones
 {
-    ".*Wall"
+    cavity
     {
-        type            fixedValue;
-        value           uniform (0 0 0);
-    }
-    frontAndBack
-    {
-        type            empty;
+        rhoCp               4.8e6;
     }
 }
+
+
+/*
+Below are listed all possible options for a porous region
+
+    rhoCp               4.8e6; // rho*cp for the subscale structure
+*/
 
 // ************************************************************************* //

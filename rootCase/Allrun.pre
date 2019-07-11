@@ -6,13 +6,13 @@ cd ${0%/*} || exit 1    # Run from this directory
 . $WM_PROJECT_DIR/bin/tools/RunFunctions
 
 #create meshes
-runApplication -s fluidDynamics    blockMesh -region fluidDynamics
-runApplication -s neutronTransport blockMesh -region neutronTransport
-runApplication -s thermalMechanics blockMesh -region thermalMechanics
+runApplication                            blockMesh
+runApplication -s cavity                  blockMesh -region cavity
+runApplication -s cavity.neutronTransport blockMesh -region cavity/neutronTransport
 
 # create dummy files for post-processing
-paraFoam -touch -region fluidDynamics
-paraFoam -touch -region neutronTransport
-paraFoam -touch -region thermalMechanics
+paraFoam -touch
+paraFoam -touch -region cavity
+paraFoam -touch -region cavity/neutronTransport
 
 #cp -rf 0.orig 0

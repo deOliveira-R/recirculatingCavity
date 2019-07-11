@@ -14,7 +14,7 @@ Description
 // Load the library containing the 'coded' functionObject
 libs            ("libutilityFunctionObjects.so");
 
-region fluidDynamics;
+region cavity;
 
 type coded;
 

@@ -5,18 +5,24 @@
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
+
 FoamFile
 {
     version     2.0;
     format      ascii;
     class       dictionary;
     location    "constant";
-    object      reactorState;
+    object      boussinesqProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-keff        1;
-pTarget     4e4;
+compr   false;
+
+beta    [0 0 0 -1 0 0 0] 0;
+
+rhoRef  [1 -3 0 0 0 0 0] 1000;
+
+TRef    [0 0 0 1 0 0 0] 900;
 
 
 // ************************************************************************* //

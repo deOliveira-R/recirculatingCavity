@@ -1,47 +1,26 @@
 /*--------------------------------*- C++ -*----------------------------------*\
 | =========                 |                                                 |
 | \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
-|  \\    /   O peration     | Version:  5                                     |
+|  \\    /   O peration     | Version:  5.x                                   |
 |   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
 |    \\/     M anipulation  |                                                 |
 \*---------------------------------------------------------------------------*/
 FoamFile
 {
-    version     2.0;
-    format      ascii;
-    class       volScalarField;
-    location    "0/fluidRegion";
-    object      p;
+    version         2;
+    format          ascii;
+    class           dictionary;
+    location        "constant";
+    object          neutronicsProperties;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensions      [1 -1 -2 0 0 0 0];
+crossSectionsModel      noParametrization;
 
-internalField   uniform 1e5;
+spatialKineticsModel    diffusion;
 
-boundaryField
-{
-    topWall
-    {
-        type            zeroGradient;
-    }
-    bottomWall
-    {
-        type            zeroGradient;
-    }
-    leftWall
-    {
-        type            zeroGradient;
-    }
-    rightWall
-    {
-        type            zeroGradient;
-    }
-    frontAndBack
-    {
-        type            empty;
-    }
-}
+fissionProductsModel    staticSimple;
 
+transient               false;
 
 // ************************************************************************* //
