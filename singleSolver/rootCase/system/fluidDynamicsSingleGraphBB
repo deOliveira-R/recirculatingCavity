@@ -1,0 +1,74 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Web:      www.OpenFOAM.org
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Writes graph data for specified fields along a line, specified by start
+    and end points.
+
+\*---------------------------------------------------------------------------*/
+
+start   #codeStream
+{
+    codeInclude
+    #{
+        #include "pointField.H"
+        #include "solutionDomainSpecifications.H"
+    #};
+
+    codeOptions
+    #{
+        -I$(FOAM_CASE)/system
+    #};
+
+    code
+    #{
+        os << point((xMax + xMin)/2, yMin, 0);
+    #};
+};
+end     #codeStream
+{
+    codeInclude
+    #{
+        #include "pointField.H"
+        #include "solutionDomainSpecifications.H"
+    #};
+
+    codeOptions
+    #{
+        -I$(FOAM_CASE)/system
+    #};
+
+    code
+    #{
+        os << point((xMax + xMin)/2, yMax, 0);
+    #};
+};
+fields  (U mag(U) p T  mag(UA) UA pA TA UErrorAbsolute pErrorAbsolute TErrorAbsolute);
+
+// Sampling and I/O settings
+// #includeEtc "caseDicts/postProcessing/graphs/sampleDict.cfg"
+
+interpolationScheme cellPoint;
+
+setFormat   raw;
+
+setConfig
+{
+    type    lineUniform;   // lineUniform, midPoint, midPointAndFace
+    axis    y;  // distance, x, y, z, xyz
+    nPoints 100;
+}
+
+// region cavity;
+
+// Override settings here, e.g.
+// setConfig { type midPoint; }
+
+// Must be last entry
+#includeEtc "caseDicts/postProcessing/graphs/graph.cfg"
+
+// ************************************************************************* //
