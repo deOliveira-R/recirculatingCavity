@@ -1,0 +1,111 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     |
+    \\  /    A nd           | Web:      www.OpenFOAM.org
+     \\/     M anipulation  |
+-------------------------------------------------------------------------------
+Description
+    Calculates the relative error between the numerical and analytical
+    solution for the problem and writes the field to the last time step.
+
+\*---------------------------------------------------------------------------*/
+
+// Load the library containing the 'coded' functionObject
+libs            ("libutilityFunctionObjects.so");
+
+// region neutronTransport;
+
+type coded;
+
+// Name of on-the-fly generated functionObject
+name neutroRegionError;
+
+codeInclude
+#{
+    #include "solutionDomainSpecifications.H"
+#};
+
+codeOptions
+#{
+    -I$(FOAM_CASE)/system
+#};
+
+//codeRead
+//codeExecute
+//codeWrite
+codeEnd
+#{
+    // Lookup flux0
+    Info<< "Looking up field discFlux0\n" << endl;
+    const volScalarField& flux0 = mesh().lookupObject<volScalarField>("discFlux0");
+
+    Info<< "Looking up time\n" << endl;
+    const Time& time = mesh().time();
+
+    Info<< "Extracting mesh centres\n" << endl;
+    const volVectorField& centres = flux0.mesh().C();
+
+    Info<< "Extracting mesh volumes\n" << endl;
+    const scalarField& V = flux0.mesh().V();
+
+    volScalarField flux0A
+    (
+        IOobject
+        (
+            "flux0A",
+            mesh().time().timeName(),
+            flux0.mesh(),
+            IOobject::NO_READ,
+            IOobject::AUTO_WRITE
+        ),
+        flux0
+    );
+
+    Info<< "Evaluating analytical solution at centres\n" << endl;
+
+    scalar fluxZero = 1e4;
+
+    scalar x = 0;
+    scalar y = 0;
+
+    forAll(flux0A, i)
+    {
+        x = centres[i].x();
+        y = centres[i].y();
+        flux0A[i] = fluxZero*sin(tau/2*((x-xMin)/(xMax-xMin)))*sin(tau/2*((y-yMin)/(yMax-yMin)));
+    }
+
+    flux0A.checkIn();
+
+    // Force writing of fluxA (since time has not changed)
+    flux0A.write();
+
+    Info<< "Evaluating errors" << endl;
+
+    volScalarField flux0ErrorAbsolute("flux0ErrorAbsolute", mag(flux0 - flux0A));
+
+    Info<<"Writing absolute error in flux0 to " << flux0ErrorAbsolute.objectPath() << endl;
+
+    flux0ErrorAbsolute.write();
+
+    volScalarField flux0ErrorRelative("flux0ErrorRelative", flux0ErrorAbsolute/mag(flux0A + dimensionedScalar("", flux0A.dimensions(), SMALL)));
+
+    Info<<"Writing relative error in flux0 to " << flux0ErrorRelative.objectPath() << nl << endl;
+
+    flux0ErrorRelative.write();
+
+    Info<< "Evaluating norms for flux0" << endl;
+
+    scalar flux0L1Norm = gSum(flux0ErrorAbsolute*V)/gSum(V);
+    scalar flux0L2Norm = sqrt(gSum(pow(flux0ErrorAbsolute,2)*V)/gSum(V));
+    scalar flux0LInfNorm = gMax(flux0ErrorAbsolute);
+
+    Info<< "L1 norm: " << flux0L1Norm << endl;
+    Info<< "L2 norm: " << flux0L2Norm << endl;
+    Info<< "Linf norm: " << flux0LInfNorm << nl << endl;
+
+    OFstream normsflux0( time.path()/"normsflux0.dat" );
+    normsflux0 << "L1;L2;Linf" << nl
+              << flux0L1Norm << ";" << flux0L2Norm << ";" << flux0LInfNorm << endl;
+#};

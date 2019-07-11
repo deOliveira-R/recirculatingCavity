@@ -1,0 +1,42 @@
+// Arbitrary XS for analytical solution
+// 02-March-2018
+
+// No delayed neutron precursors!
+
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      nuclearData/reference;
+}
+
+energyGroups        1;
+precursorGroups     1;
+
+lambda      ( 1.246670E-02 );
+
+zones
+{
+    cavity
+    {
+        D                   ( 2e-02 );
+        rem                 ( 1 );
+        scatteringMatrix
+        (
+            ( 1.566666e+01 )
+        );
+        nuFission           ( 1.04 );
+        kappaFission        ( 1 );
+
+        IV                  ( 1E-07 );
+        chiPrompt           ( 1 );
+        chiDelayed          ( 0 );
+        discFactor          ( 1 );
+        integralFlux        ( 1 );
+
+        beta                ( 0 );
+        Sc  2e8;
+    }
+}

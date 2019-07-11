@@ -1,0 +1,17 @@
+#!/bin/sh
+
+cd ${0%/*} || exit 1    # Run from this directory
+
+./Allrun.pre
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+runApplication $(getApplication)
+
+postProcess -funcs '(mag(U) mag(UA))' >> log.postProcess.fluidDynamics 2>&1
+postProcess -func fluidDynamicsSingleGraphAA >> log.postProcess.fluidDynamics 2>&1
+postProcess -func fluidDynamicsSingleGraphBB >> log.postProcess.fluidDynamics 2>&1
+
+postProcess -func neutronTransportSingleGraphAA >> log.postProcess.neutronTransport 2>&1
+postProcess -func neutronTransportSingleGraphBB >> log.postProcess.neutronTransport 2>&1
