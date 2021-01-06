@@ -16,6 +16,7 @@ Thumbs.db
 *.out
 *.synctex*
 *.nl*
+*.spl
 
 /documentation/*.pdf
 /mesh_*/
