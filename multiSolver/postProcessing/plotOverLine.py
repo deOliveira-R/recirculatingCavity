@@ -61,11 +61,11 @@ else:
         plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
         plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
     
-path = '../Documentation/3_results_and_discussion/figures/'
-#path = ''
+#path = '../Documentation/3_results_and_discussion/figures/'
+path = ''
 
 folder = '../mesh_100/postProcessing/'
-file = 'fluidRegionSingleGraphAA/fluidRegion/50/line_mag(U)_p_T_mag(UA)_pA_TA_UErrorAbsolute_pErrorAbsolute_TErrorAbsolute.xy'
+file = 'fluidDynamicsSingleGraphAA/cavity/50/line_mag(U)_p_T_mag(UA)_pA_TA_UErrorAbsolute_pErrorAbsolute_TErrorAbsolute.xy'
 scalar = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'mag(U)', 'p', 'T', 'mag(UA)', 'pA', 'TA', 'UError', 'pError', 'TError'])
 scalar['UError'] = scalar['UError']/scalar['mag(UA)']*100
 scalar['pError'] = scalar['pError']/scalar['pA']*100
@@ -76,7 +76,7 @@ velocity = pd.DataFrame(scalar[['mag(U)', 'mag(UA)', 'UError']])
 velocity.columns = ['numerical', 'analytical', 'error']
 
 vel = velocity.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-vel.set(xlabel='x ($ m $)',
+vel.set(xlabel='x ($ \mathrm{m} $)',
         ylabel='Velocity ($ \mathrm{m} \cdot \mathrm{s}^{-1} $) magnitude')
 vel.right_ax.set(ylabel='Relative error (\%)',
                  ylim=(0, 0.02))
@@ -88,7 +88,7 @@ pressure = pd.DataFrame(scalar[['p', 'pA', 'pError']])
 pressure.columns = ['numerical', 'analytical', 'error']
 
 pres = pressure.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-pres.set(xlabel='x ($ m $)',
+pres.set(xlabel='x ($ \mathrm{m} $)',
          ylabel='Pressure ($ \mathrm{Pa} $)')
 pres.right_ax.set(ylabel='Relative error (\%)',
                   ylim=(0, 0.0002))
@@ -99,7 +99,7 @@ temperature = pd.DataFrame(scalar[['T', 'TA', 'TError']])
 temperature.columns = ['numerical', 'analytical', 'error']
 
 temp = temperature.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-temp.set(xlabel='x ($ m $)',
+temp.set(xlabel='x ($ \mathrm{m} $)',
              ylabel='Temperature ($ \mathrm{K} $)')
 temp.right_ax.set(ylabel='Relative error (\%)',
                   ylim=(0, 0.02))
@@ -116,6 +116,9 @@ savefig(path + 'temperature')
 #             ylabel='Velocity ($m \cdot s^{-1}$) y')
 #savefig(path + 'velocity_y')
 
+# nesting of neutronics mesh inside fluids mesh is not working well,
+# postProcessing function object is not being properly executed there
+
 
 file = 'neutroRegionSingleGraphAA/neutroRegion/50/line_flux0_flux0A_flux0ErrorAbsolute.xy'
 scalar = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'flux0', 'flux0A', 'flux0Error'])
@@ -128,7 +131,7 @@ print(scalar)
 flux = pd.DataFrame(scalar[['flux0', 'flux0A', 'flux0Error']])
 flux.columns = ['numerical', 'analytical', 'error']
 flu = flux.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-flu.set(xlabel='x ($ m $)',
+flu.set(xlabel='x ($ \mathrm{m} $)',
         ylabel='Flux ($ \mathrm{m}^{-2} \cdot \mathrm{s}^{-1} $)')
 flu.right_ax.set(ylabel='Relative error (\%)',
                  ylim=(0, 0.02))

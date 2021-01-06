@@ -35,10 +35,10 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
 #    "legend.fontsize": 16,               # Make the legend/label fonts a little smaller
 #    "xtick.labelsize": 16,
 #    "ytick.labelsize": 16,
-    "figure.figsize": figsize(0.9),     # default fig size of 0.9 textwidth
+    "figure.figsize": figsize(0.8),     # default fig size of 0.9 textwidth
 #    "pgf.texsystem": "lualatex",        # change this if using xetex or luatex
     "pgf.preamble": [
-    r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts becasue your computer can handle it :)
+    r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts
     r"\usepackage[T1]{fontenc}",        # plots will be generated using this preamble
     ]
 }
@@ -47,6 +47,7 @@ mpl.rcParams.update(pgf_with_latex)
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+
 
 if standard:
     sns.set()
@@ -60,13 +61,55 @@ else:
     def savefig(filename):
         plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
         plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
+
+
+def plot_scalar_old(scalar):
+    ax = scalar.plot(secondary_y=['error'], style=['-', '-', '--'])
+    ax.set(xlabel='x ($ \mathrm{m} $)',
+           ylabel='Velocity ($ \mathrm{m} \, \mathrm{s}^{-1} $) magnitude',
+           xlim=(-1.75,1.75),
+           ylim=(0,1.05))
+    ax.yaxis.set_ticks(np.arange(0,1.2,0.2))
+    ax.right_ax.set(ylabel='Relative error (\%)',
+                    ylim=(0, 0.021))
+    ax.right_ax.yaxis.set_ticks(np.arange(0,0.024,0.004))
+    ax.grid(axis='x')
+
+
+def plot_scalar(scalar, ylabel, ylim=None, y2lim=None, y2ticks=None):
+    # This plotting gymnastics replaces the code above in order to get the plot
+    # of the analytical and numerical values to appear on top of grid
+
+    # fig, vel = plt.subplots()
+
+    ax = scalar[['numerical', 'analytical']].plot(color=['tab:green', 'tab:blue'],legend=None)
+
+    ax_err = scalar['error'].plot(ax=ax, secondary_y=True, style='--', color='tab:red')
+    ax_err.set(ylabel='Relative error (\%)')
+    if hasattr(type(y2lim), '__iter__'): ax_err.set(ylim=y2lim)
+    if hasattr(type(y2ticks), '__iter__'): ax_err.yaxis.set_ticks(y2ticks)
+    ax_err.grid(False)
+
+    ax.set(xlabel='x ($ \mathrm{m} $)',
+           ylabel=ylabel,
+           xlim=(-1.75,1.75)),
+    if hasattr(type(ylim), '__iter__'): ax.set(ylim=ylim)
+    ax.grid(True)
+
+    h1, l1 = ax.get_legend_handles_labels()
+    h2, l2 = ax_err.get_legend_handles_labels()
+    plt.legend(h1+h2, l1+l2, bbox_to_anchor=(0, 1, 1, 0), loc="lower left", mode="expand", ncol=3, frameon=False)
+
     
-path = '../Documentation/3_results_and_discussion/figures/'
-#path = ''
+#path = '../Documentation/3_results_and_discussion/figures/'
+path = ''
 
 folder = '../mesh_100/postProcessing/'
-file = 'fluidRegionSingleGraphAA/fluidRegion/50/line_mag(U)_p_T_mag(UA)_pA_TA_UErrorAbsolute_pErrorAbsolute_TErrorAbsolute.xy'
+
+file = 'fluidDynamicsSingleGraphAA/50/line_mag(U)_p_T_mag(UA)_pA_TA_UErrorAbsolute_pErrorAbsolute_TErrorAbsolute.xy'
 scalar = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'mag(U)', 'p', 'T', 'mag(UA)', 'pA', 'TA', 'UError', 'pError', 'TError'])
+
+# Turn errors into relative values and set index
 scalar['UError'] = scalar['UError']/scalar['mag(UA)']*100
 scalar['pError'] = scalar['pError']/scalar['pA']*100
 scalar['TError'] = scalar['TError']/scalar['TA']*100
@@ -75,35 +118,35 @@ scalar = scalar.set_index('x')
 velocity = pd.DataFrame(scalar[['mag(U)', 'mag(UA)', 'UError']])
 velocity.columns = ['numerical', 'analytical', 'error']
 
-vel = velocity.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-vel.set(xlabel='x ($ m $)',
-        ylabel='Velocity ($ \mathrm{m} \cdot \mathrm{s}^{-1} $) magnitude')
-vel.right_ax.set(ylabel='Relative error (\%)',
-                 ylim=(0, 0.02))
-vel.grid(axis='x')
+ylim = np.array([0,1.05])
+plot_scalar(velocity,
+            ylabel='Velocity ($ \mathrm{m} \, \mathrm{s}^{-1} $) magnitude',
+            ylim=ylim,
+            y2lim=ylim / 50,
+            y2ticks=np.arange(0,0.024,0.004))
 savefig(path + 'velocity_mag')
 
 
 pressure = pd.DataFrame(scalar[['p', 'pA', 'pError']])
 pressure.columns = ['numerical', 'analytical', 'error']
 
-pres = pressure.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-pres.set(xlabel='x ($ m $)',
-         ylabel='Pressure ($ \mathrm{Pa} $)')
-pres.right_ax.set(ylabel='Relative error (\%)',
-                  ylim=(0, 0.0002))
-pres.grid(axis='x')
+plot_scalar(pressure,
+            ylabel='Pressure ($ \mathrm{Pa} $)',
+            ylim=(1e5-10,1.005e5+10),
+            y2lim=(-10/2.5e6, ((1.005e5+10)-1e5)/2.5e6),
+            y2ticks=np.arange(0,2.4e-4,4e-5))
 savefig(path + 'pressure')
+
+
 
 temperature = pd.DataFrame(scalar[['T', 'TA', 'TError']])
 temperature.columns = ['numerical', 'analytical', 'error']
 
-temp = temperature.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-temp.set(xlabel='x ($ m $)',
-             ylabel='Temperature ($ \mathrm{K} $)')
-temp.right_ax.set(ylabel='Relative error (\%)',
-                  ylim=(0, 0.02))
-temp.grid(axis='x')
+plot_scalar(temperature,
+            ylabel='Temperature ($ \mathrm{K} $)',
+            ylim=(1e3-3,1.1e3+3),
+            y2lim=(-3/5e3, ((1.1e3+3)-1e3)/5e3),
+            y2ticks=np.arange(0,2.4e-2,4e-3))
 savefig(path + 'temperature')
 
 
@@ -111,30 +154,28 @@ savefig(path + 'temperature')
 #
 #vector = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'Ux', 'Uy', 'Uz', 'UAx', 'UAy', 'UAz'])
 #vector = vector.set_index('x')
-#velocity = vector[['Uy', 'UAy']].plot(figsize=figsize(0.7))
+#velocity = vector[['Uy', 'UAy']].plot()
 #velocity.set(xlabel='x ($m$)',
 #             ylabel='Velocity ($m \cdot s^{-1}$) y')
 #savefig(path + 'velocity_y')
 
 
-file = 'neutroRegionSingleGraphAA/neutroRegion/50/line_flux0_flux0A_flux0ErrorAbsolute.xy'
+file = 'neutronTransportSingleGraphAA/50/line_flux0_flux0A_flux0ErrorAbsolute.xy'
 scalar = pd.read_csv(folder + file, sep='\t', header=None, names=['x', 'flux0', 'flux0A', 'flux0Error'])
-print(scalar)
+#print(scalar)
 scalar['flux0Error'] = scalar['flux0Error']/scalar['flux0A']*100
 scalar = scalar.set_index('x')
-
-print(scalar)
+#print(scalar)
 
 flux = pd.DataFrame(scalar[['flux0', 'flux0A', 'flux0Error']])
 flux.columns = ['numerical', 'analytical', 'error']
-flu = flux.plot(secondary_y=['error'], style=['-', '-', '--'], figsize=figsize(0.7))
-flu.set(xlabel='x ($ m $)',
-        ylabel='Flux ($ \mathrm{m}^{-2} \cdot \mathrm{s}^{-1} $)')
-flu.right_ax.set(ylabel='Relative error (\%)',
-                 ylim=(0, 0.02))
-flu.grid(axis='x')
-savefig(path + 'flux0')
 
+plot_scalar(flux,
+            ylabel='Flux ($ \mathrm{m}^{-2} \, \mathrm{s}^{-1} $)',
+            ylim=(0-4e2,1e4+4e2),
+            y2lim=(-4e2/5e5, (1e4+4e2)/5e5),
+            y2ticks=np.arange(0,2.4e-2,4e-3))
+savefig(path + 'flux0')
 
 
 #for file, title in zip(parameters['file'], parameters['title']):

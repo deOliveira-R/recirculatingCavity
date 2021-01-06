@@ -18,13 +18,13 @@ FoamFile
 ddtSchemes
 {
     default none;
-    ddt(zoneData.rhoCpStructures,TStructures)   Euler;
+    ddt(fluidPorous:rhoCp,TStructures)      Euler;
 
-    ddt(zoneData.fluidFraction,p_rgh)       Euler;
-    ddt(zoneData.fluidFraction,rho)         Euler;
+    ddt(fluidPorous:fluidFraction,p_rgh)    Euler;
+    ddt(fluidPorous:fluidFraction,rho)      Euler;
     ddt(rho,U)                              Euler;
-    ddt((zoneData.fluidFraction*rho),K)     steadyState;
-    ddt((zoneData.fluidFraction*rho),h)     steadyState;
+    ddt((fluidPorous:fluidFraction*rho),K)  steadyState;
+    ddt((fluidPorous:fluidFraction*rho),h)  steadyState;
 }
 
 gradSchemes
@@ -65,8 +65,8 @@ interpolationSchemes
 {
     default none;
     interpolate(rho_0)                  linear;
-    interpolate(zoneData.fluidFraction) linear;
-    interpolate(((zoneData.fluidFraction*rho)*rAU)) linear;
+    interpolate(fluidPorous:fluidFraction) linear;
+    interpolate(((fluidPorous:fluidFraction*rho)*rAU)) linear;
     dotInterpolate(S,(rho_0*U_0))       linear;
     flux((rho*HbyA))                    linear;
 }

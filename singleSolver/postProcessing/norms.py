@@ -35,10 +35,10 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
 #    "legend.fontsize": 16,               # Make the legend/label fonts a little smaller
 #    "xtick.labelsize": 16,
 #    "ytick.labelsize": 16,
-    "figure.figsize": figsize(0.9),     # default fig size of 0.9 textwidth
+    "figure.figsize": figsize(0.8),     # default fig size of 0.8 textwidth
 #    "pgf.texsystem": "lualatex",        # change this if using xetex or luatex
     "pgf.preamble": [
-    r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts becasue your computer can handle it :)
+    r"\usepackage[utf8x]{inputenc}",
     r"\usepackage[T1]{fontenc}",        # plots will be generated using this preamble
     ]
 }
@@ -69,8 +69,8 @@ parameters = {'file': ['U', 'p', 'T', 'flux0'],
 
 norms = {}
 show = ['L1','L2']
-path = '../Documentation/3_results_and_discussion/figures/'
-#path = ''
+# path = '../Documentation/3_results_and_discussion/figures/'
+path = ''
 
 for file, title in zip(parameters['file'], parameters['title']):
     # Read norm files into a list of dataframes
@@ -91,8 +91,8 @@ for file, title in zip(parameters['file'], parameters['title']):
             norms[file]['OoA'].iloc[i] = np.log(ratio)/np.log(refinement)
     
     print(norms[file])
-    norm = norms[file][show].plot(marker='o', figsize=figsize(0.7))
+    norm = norms[file][show].plot(marker='o', color=['tab:blue','tab:green'])
     norm.set(xlabel='Mesh size',
-             ylabel=title + ' ($ \mathrm{m} \cdot \mathrm{s}^{-1} $)' + ' norm')
+             ylabel=title + ' ($ \mathrm{m} \, \mathrm{s}^{-1} $)' + ' norm')
     savefig(path + 'norms{}'.format(file))
 

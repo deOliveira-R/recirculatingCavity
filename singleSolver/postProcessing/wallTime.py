@@ -36,7 +36,7 @@ pgf_with_latex = {                      # setup matplotlib to use latex for outp
 #    "legend.fontsize": 16,               # Make the legend/label fonts a little smaller
 #    "xtick.labelsize": 16,
 #    "ytick.labelsize": 16,
-    "figure.figsize": figsize(0.9),     # default fig size of 0.9 textwidth
+    "figure.figsize": figsize(0.8),     # default fig size of 0.8 textwidth
 #    "pgf.texsystem": "lualatex",        # change this if using xetex or luatex
     "pgf.preamble": [
     r"\usepackage[utf8x]{inputenc}",    # use utf8 fonts becasue your computer can handle it :)
@@ -62,8 +62,8 @@ else:
         plt.savefig('{}.pgf'.format(filename), bbox_inches='tight', transparent=True)
         plt.savefig('{}.pdf'.format(filename), bbox_inches='tight', transparent=True)
     
-path = '../Documentation/3_results_and_discussion/figures/'
-#path = ''
+# path = '../Documentation/3_results_and_discussion/figures/'
+path = ''
 
 run = {'mesh': np.array([25, 50, 100, 200]),
        'wall time': np.array([34, 50, 177, 1586])}
@@ -75,5 +75,11 @@ wallTime.set_index('mesh', inplace=True)
 
 ax = wallTime.plot(legend=False, marker='o', figsize=figsize(0.7))
 ax.set(xlabel='Mesh size',
-       ylabel='Wall time (s)')
+       ylabel='Wall time (s)',
+       xlim=(20,205),
+       # ylim=(10,10000)
+       )
+ax.xaxis.set_ticks((25,50,100,200))
+# ax.set_xscale('log')
+# ax.set_yscale('log')
 savefig(path + 'wallTime')
